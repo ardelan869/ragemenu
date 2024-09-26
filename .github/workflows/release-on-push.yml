@@ -67,10 +67,13 @@ jobs:
       - name: Check if tag exists
         id: check_tag
         run: |
+          echo "Checking if the tag $NEW_TAG exists..."
+          git tag  # List all tags for debugging
           if git rev-parse "$NEW_TAG" >/dev/null 2>&1; then
-            echo "Tag $NEW_TAG already exists. Exiting..."
+            echo "Tag $NEW_TAG already exists."
             echo "exists=true" >> $GITHUB_ENV
           else
+            echo "Tag $NEW_TAG does not exist."
             echo "exists=false" >> $GITHUB_ENV
           fi
 
