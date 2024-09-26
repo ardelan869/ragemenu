@@ -7,52 +7,8 @@ import { useKeyDown } from '@/lib/keys';
 import { useNuiEvent } from '@/lib/hooks';
 import { fetchNui } from '@/lib';
 
-const DEFAULT_ITEMS: ItemProps[] = [
-  {
-    id: 'button',
-    type: 'button',
-    label: 'Button',
-    badges: {
-      left: 'shop_ammo_icon',
-      right: 'shop_ammo_icon'
-    },
-    selected: false
-  },
-  {
-    id: 'checkbox',
-    type: 'checkbox',
-    label: 'Checkbox',
-    selected: false,
-    checked: true,
-    iconStyle: 'tick'
-  },
-  {
-    id: 'separator',
-    type: 'separator',
-    label: 'Separator',
-    selected: false
-  },
-  {
-    id: 'list',
-    type: 'list',
-    label: 'List',
-    selected: true,
-    values: ['I', 'love', 'cats', '🐈'],
-    current: 1
-  },
-  {
-    id: 'slider',
-    type: 'slider',
-    label: 'Slider',
-    selected: false,
-    current: 50,
-    max: 100,
-    min: 0
-  }
-];
-
 export default function Menu() {
-  const [items, setItems] = useState<ItemProps[]>([...DEFAULT_ITEMS]);
+  const [items, setItems] = useState<ItemProps[]>([]);
   const [selected, setSelected] = useState(0);
 
   useNuiEvent<ItemProps[]>('SetItems', setItems);
