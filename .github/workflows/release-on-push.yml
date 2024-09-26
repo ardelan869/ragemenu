@@ -1,11 +1,10 @@
 name: Build and Release
 
-# Trigger on push to main branch or manual trigger
+# Trigger on push to main branch
 on:
   push:
     branches:
       - main
-  workflow_dispatch:  # Allows manual trigger from GitHub UI
 
 permissions:
   contents: write  # Ensure that the workflow has write permissions
@@ -35,29 +34,18 @@ jobs:
         working-directory: ./web
         run: npm run build
 
-      # Create a new directory for the zip file
-      - name: Prepare files for zip
+      # Remove unnecessary files
+      - name: Clean up unnecessary files
         run: |
-          # Clear the existing web directory
-          rm -rf ./web/*  # Clear the web directory
-          
-          # Copy the dist folder into the web directory
-          cp -r ./web/dist/* ./web/  # Copy all contents from dist into web directory
-          
-          # Copy the entire repository into the zip directory excluding unnecessary files
-          ZIP_DIR="./zip_content"
-          mkdir -p $ZIP_DIR
-          rsync -av --exclude='.git/' --exclude='node_modules/' --exclude='zip_content/' ./ $ZIP_DIR/
-
-          # Remove the zip_content folder if it exists
-          rm -rf ./zip_content/web/dist  # Delete the dist directory after merging
+          rm -rf ./web/node_modules
+          rm -f ./web/package-lock.json
 
       # Create a zip file of the repository contents
       - name: Create zip file
         run: |
-          cd ./zip_content
-          zip -r ../${{ github.event.repository.name }}.zip .  # Zip all contents in the zip directory
-          cd ..  # Go back to the root directory
+          ZIP_DIR="./${{ github.event.repository.name }}.zip"
+          # Copy the entire repository excluding unnecessary files
+          rsync -av --exclude='.git/' --exclude='node_modules/' --exclude='zip_content/' ./ $ZIP_DIR
 
       # Delete previous release if it exists
       - name: Delete previous release
@@ -104,7 +92,7 @@ jobs:
           draft: false
           prerelease: false
 
-      # Upload the built artifacts to the release
+      # Upload the zip file to the release
       - name: Upload Build Artifacts to Release
         uses: actions/upload-release-asset@v1
         env:
