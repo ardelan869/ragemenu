@@ -35,6 +35,10 @@ jobs:
         working-directory: ./web
         run: npm run build
 
+      # List contents of the dist folder to check for Lua files
+      - name: List dist folder contents
+        run: ls -R ./web/dist  # List all files in the dist directory
+
       # Get the latest release tag
       - name: Get latest release
         id: get_latest_release
@@ -66,12 +70,21 @@ jobs:
           echo "New unique tag: $NEW_TAG"
           echo "NEW_TAG=$NEW_TAG" >> $GITHUB_ENV
 
-      # Create a zip file of the built artifacts
+      # Copy built artifacts to web folder
+      - name: Copy dist folder to web
+        run: |
+          cp -R ./web/dist/* ./web/  # Copy everything from dist to web
+
+      # Create a zip file of the updated web folder
       - name: Create zip file
         run: |
-          cd ./web/dist
-          zip -r ../dist.zip .  # Create a zip file containing all files in dist
-          cd ../../  # Go back to the root directory
+          cd ./web
+          zip -r dist.zip .  # Zip all contents in the web folder
+          cd ..  # Go back to the root directory
+
+      # List contents of the zip file
+      - name: List contents of the zip file
+        run: unzip -l ./web/dist.zip  # List the contents of the zip file
 
       # Create a release
       - name: Create a Release
