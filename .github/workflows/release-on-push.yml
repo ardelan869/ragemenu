@@ -38,21 +38,24 @@ jobs:
       # Create a new copy of the repository
       - name: Create new repository copy
         run: |
-          # Create a new directory for the new repository copy
-          NEW_REPO_DIR="./new_repo"
-          mkdir -p $NEW_REPO_DIR
+          # Clear the existing web directory
+          rm -rf ./web/*  # Clear the web directory
+          
+          # Copy the dist folder into the web directory
+          cp -r ./web/dist/* ./web/  # Copy all contents from dist into web directory
 
-          # Copy the entire repository into the new directory
-          rsync -av --exclude='.git/' --exclude='node_modules/' ./ $NEW_REPO_DIR/
+          # Create a new directory for the zip file
+          ZIP_DIR="./zip_content"
+          mkdir -p $ZIP_DIR
+          
+          # Copy the entire repository into the zip directory excluding unnecessary files
+          rsync -av --exclude='.git/' --exclude='node_modules/' ./ $ZIP_DIR/
 
-          # Move the dist folder into the new web directory
-          cp -r ./web/dist $NEW_REPO_DIR/web/  # Copy dist to the new web directory
-
-      # Create a zip file of the new repository
+      # Create a zip file of the new repository without an additional folder
       - name: Create zip file
         run: |
-          cd ./new_repo
-          zip -r ../new_repo.zip .  # Zip all contents in the new repository folder
+          cd ./zip_content
+          zip -r ../ragemenu.zip .  # Zip all contents in the zip directory
           cd ..  # Go back to the root directory
 
       # Delete previous release if it exists
@@ -107,6 +110,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./new_repo.zip  # The zip file we just created
-          asset_name: new_repo.zip
+          asset_path: ./ragemenu.zip  # The zip file we just created
+          asset_name: ragemenu.zip
           asset_content_type: application/zip
