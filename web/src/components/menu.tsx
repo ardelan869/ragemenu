@@ -15,18 +15,28 @@ interface MenuProps {
 }
 
 export default function Menu() {
-  const [menu, setMenu] = useState<MenuProps | undefined>({
-    id: '',
-    resource: '',
-    title: '',
-    subtitle: ''
-  });
+  const [menu, setMenu] = useState<MenuProps | undefined>();
   const [items, setItems] = useState<ItemProps[]>([]);
   const [selected, setSelected] = useState(0);
+
+  useNuiEvent<MenuProps>('UpdateMenu', (menuProps) => {
+    setMenu((prevMenu) => {
+      if (!prevMenu) return menuProps;
+
+      return {
+        ...prevMenu,
+        ...menuProps
+      };
+    });
+  });
 
   useNuiEvent<MenuProps | undefined>('SetMenu', setMenu);
 
   useNuiEvent<ItemProps[]>('SetItems', setItems);
+
+  useNuiEvent<ItemProps>('AddItem', (item) => {
+    setItems([...items, item]);
+  });
 
   useNuiEvent<ItemProps>('UpdateItem', (item) => {
     const index = items.findIndex((i) => i.id === item.id);
@@ -161,7 +171,7 @@ export default function Menu() {
             {menu.title}
           </h1>
         </header>
-        <SubTitle> {menu.subtitle}</SubTitle>
+        <SubTitle>{menu.subtitle}</SubTitle>
         <section>
           {items.map((item, index) => (
             <Item key={item.id} {...item} selected={index === selected}>
