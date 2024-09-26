@@ -87,6 +87,30 @@ jobs:
           zip -r ../ragemenu.zip .  # Zip all contents in the ragemenu folder
           cd ..  # Go back to the root directory
 
+      # Delete the existing release and tag if they exist
+      - name: Delete existing release and tag
+        id: delete_release
+        run: |
+          # Check if the tag exists and delete the release and tag
+          if git rev-parse "$NEW_TAG" >/dev/null 2>&1; then
+            echo "Deleting existing release and tag $NEW_TAG"
+            # Delete the release using GitHub API
+            release_id=$(gh release list --json id,tagName | jq -r ".[] | select(.tagName==\"$NEW_TAG\") | .id")
+            if [ "$release_id" != "" ]; then
+              gh release delete "$NEW_TAG" --yes
+            fi
+            git tag -d "$NEW_TAG"
+            git push origin :refs/tags/"$NEW_TAG"
+          fi
+
+      # Get the commit message for the release name
+      - name: Get commit message
+        id: get_commit_message
+        run: |
+          COMMIT_MESSAGE=$(git log -1 --pretty=%B)
+          echo "Release name: $COMMIT_MESSAGE"
+          echo "RELEASE_NAME=$COMMIT_MESSAGE" >> $GITHUB_ENV
+
       # Create a release
       - name: Create a Release
         id: create_release
@@ -94,8 +118,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ env.NEW_TAG }}  # Use the new incremented tag
-          release_name: Release ${{ env.NEW_TAG }}
+          tag_name: "latest"  # Set tag name to "latest"
+          release_name: ${{ env.RELEASE_NAME }}  # Use the commit message as the release name
           body: |
             Automatically generated release based on the push
           draft: false
