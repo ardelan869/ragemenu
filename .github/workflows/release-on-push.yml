@@ -15,21 +15,46 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Check out the code from the repository
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      # Set up Node.js environment for npm
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16'
+          node-version: '20' # or any other Node.js version you need
 
+      # Install npm dependencies
       - name: Install dependencies
         working-directory: ./web
         run: npm install
 
+      # Build the project
       - name: Build project
         working-directory: ./web
         run: npm run build
+
+      # Get the latest release tag
+      - name: Get latest release
+        id: get_latest_release
+        run: |
+          TAG=$(git tag | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -n 1)
+          echo "Latest tag: $TAG"
+          if [ -z "$TAG" ]; then
+            TAG="v1.0.0"  # Start with v1.0.0 if no tags exist
+          fi
+          echo "TAG=$TAG" >> $GITHUB_ENV
+
+      # Increment the version
+      - name: Increment version
+        id: increment_version
+        run: |
+          IFS='.' read -r major minor patch <<< "${{ env.TAG:1 }}" # Remove the 'v' and split
+          patch=$((patch + 1))  # Increment the patch version
+          NEW_TAG="v${major}.${minor}.${patch}"
+          echo "New tag: $NEW_TAG"
+          echo "NEW_TAG=$NEW_TAG" >> $GITHUB_ENV
 
       # Create a release
       - name: Create a Release
@@ -38,8 +63,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.sha }}
-          release_name: Release ${{ github.sha }}
+          tag_name: ${{ env.NEW_TAG }}  # Use the new incremented tag
+          release_name: Release ${{ env.NEW_TAG }}
           body: |
             Automatically generated release based on the push
           draft: false
@@ -52,6 +77,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./web/dist/
-          asset_name: ragemenu.zip
+          asset_path: ./web/dist/  # Replace this with the actual path to the built files
+          asset_name: build.zip
           asset_content_type: application/zip
