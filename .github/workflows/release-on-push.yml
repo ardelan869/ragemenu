@@ -38,18 +38,16 @@ jobs:
       # Prepare the output directory
       - name: Prepare output directory
         run: |
-          # Create a new directory to hold the final output
-          mkdir -p ./ragemenu/web
-          
-          # Copy original files, excluding ignored files
-          rsync -av --exclude='node_modules' --exclude='.git/' --exclude='*.log' ./ ./ragemenu/
-          
-          # Move the dist folder into the web directory
-          mv ./web/dist ./ragemenu/web/  # Move the built dist folder
+          # Clear the existing web directory
+          rm -rf ./web/*  # Remove all contents from the web directory
+
+          # Copy the dist folder contents into the web directory
+          cp -r ./web/dist/* ./web/  # Copy all contents from dist into web directory
 
       # Create a zip file of the ragemenu folder
       - name: Create zip file
         run: |
+          mkdir -p ./ragemenu
           cd ./ragemenu
           zip -r ../ragemenu.zip .  # Zip all contents in the ragemenu folder
           cd ..  # Go back to the root directory
