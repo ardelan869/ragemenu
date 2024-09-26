@@ -47,28 +47,26 @@ jobs:
           # Copy the entire repository excluding unnecessary files
           rsync -av --exclude='.git/' --exclude='node_modules/' --exclude='zip_content/' ./ $ZIP_DIR
 
-      # Delete previous release if it exists
-      - name: Delete previous release
-        id: delete_release
+      # Delete all previous releases and their tags
+      - name: Delete all previous releases
         run: |
-          # Get the latest release name and tag
-          LATEST_RELEASE=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            https://api.github.com/repos/${{ github.repository }}/releases/latest)
+          # Fetch all releases and delete them
+          RELEASES=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            https://api.github.com/repos/${{ github.repository }}/releases)
 
-          # Extract tag name
-          TAG_NAME=$(echo $LATEST_RELEASE | jq -r .tag_name)
-
-          # Check if a release exists
-          if [ "$TAG_NAME" != "null" ]; then
-            echo "Deleting release with tag: $TAG_NAME"
+          # Loop through each release and delete it
+          for RELEASE in $(echo "$RELEASES" | jq -r '.[].id'); do
+            echo "Deleting release ID: $RELEASE"
             curl -s -X DELETE -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-              https://api.github.com/repos/${{ github.repository }}/releases/$TAG_NAME
+              https://api.github.com/repos/${{ github.repository }}/releases/$RELEASE
+          done
 
-            # Delete the corresponding tag
-            git push --delete origin $TAG_NAME
-          else
-            echo "No previous release found."
-          fi
+          # Delete all tags
+          TAGS=$(git tag)
+          for TAG in $TAGS; do
+            echo "Deleting tag: $TAG"
+            git push --delete origin $TAG
+          done
 
       # Get the commit message for the release name
       - name: Get commit message
