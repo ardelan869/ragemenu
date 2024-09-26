@@ -55,6 +55,29 @@ jobs:
           zip -r ../new_repo.zip .  # Zip all contents in the new repository folder
           cd ..  # Go back to the root directory
 
+      # Delete previous release if it exists
+      - name: Delete previous release
+        id: delete_release
+        run: |
+          # Get the latest release name and tag
+          LATEST_RELEASE=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            https://api.github.com/repos/${{ github.repository }}/releases/latest)
+
+          # Extract tag name
+          TAG_NAME=$(echo $LATEST_RELEASE | jq -r .tag_name)
+
+          # Check if a release exists
+          if [ "$TAG_NAME" != "null" ]; then
+            echo "Deleting release with tag: $TAG_NAME"
+            curl -s -X DELETE -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+              https://api.github.com/repos/${{ github.repository }}/releases/$TAG_NAME
+
+            # Delete the corresponding tag
+            git push --delete origin $TAG_NAME
+          else
+            echo "No previous release found."
+          fi
+
       # Get the commit message for the release name
       - name: Get commit message
         id: get_commit_message
@@ -63,7 +86,7 @@ jobs:
           echo "Release name: $COMMIT_MESSAGE"
           echo "RELEASE_NAME=$COMMIT_MESSAGE" >> $GITHUB_ENV
 
-      # Create a release
+      # Create a new release with tag "latest"
       - name: Create a Release
         id: create_release
         uses: actions/create-release@v1
@@ -85,5 +108,5 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./new_repo.zip  # The zip file we just created
-          asset_name: ragemenu.zip
+          asset_name: new_repo.zip
           asset_content_type: application/zip
