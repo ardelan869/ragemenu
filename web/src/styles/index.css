@@ -1,3 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: 'Signpainter';
+  src: url('/assets/fonts/Signpainter.ttf');
+}
+
+@font-face {
+  font-family: 'Chalet Paris';
+  src: url('/assets/fonts/Chalet-ParisNineteenSixty.ttf');
+}
+
 *,
 *::after,
 *::before {
