@@ -6,7 +6,7 @@ export default function Slider({
   className,
   ...props
 }: Omit<React.HTMLAttributes<HTMLElement>, 'children'>) {
-  const { selected, current = 0 } = useItem() as SliderProps;
+  const { selected, current = 0, max } = useItem() as SliderProps;
 
   return (
     <div
@@ -18,7 +18,10 @@ export default function Slider({
         src="assets/images/arrowleft.png"
       />
       <div className="bg-[#042039] w-[150px] h-[9px] overflow-hidden">
-        <div className="bg-[#3974C8] h-full" style={{ width: `${current}%` }} />
+        <div
+          className="bg-[#3974C8] h-full"
+          style={{ width: `${(current / max) * 100}%` }}
+        />
       </div>
       <img
         className={cn('w-2 h-2 object-contain', selected && 'invert')}
