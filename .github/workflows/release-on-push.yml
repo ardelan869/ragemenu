@@ -1,32 +1,32 @@
 name: Build and Release
 
-# Trigger the workflow on every push to the main branch
+# Trigger on push to main branch or manual trigger
 on:
   push:
     branches:
       - main
+  workflow_dispatch:  # Allows manual trigger from GitHub UI
+
+permissions:
+  contents: write  # Ensure that the workflow has write permissions
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      # Check out the code from the repository
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Set up Node.js environment for npm
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16' # or any other Node.js version you need
+          node-version: '16'
 
-      # Install npm dependencies
       - name: Install dependencies
         working-directory: ./web
         run: npm install
 
-      # Build the project
       - name: Build project
         working-directory: ./web
         run: npm run build
@@ -52,6 +52,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./web/dist/ # Replace this with the actual path to the built files
-          asset_name: build.zip
+          asset_path: ./web/dist/
+          asset_name: ragemenu.zip
           asset_content_type: application/zip
