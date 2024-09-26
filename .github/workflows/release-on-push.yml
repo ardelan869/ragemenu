@@ -35,21 +35,24 @@ jobs:
         working-directory: ./web
         run: npm run build
 
-      # Prepare the output directory
-      - name: Prepare output directory
+      # Create a new copy of the repository
+      - name: Create new repository copy
         run: |
-          # Clear the existing web directory
-          rm -rf ./web/*  # Remove all contents from the web directory
+          # Create a new directory for the new repository copy
+          NEW_REPO_DIR="./new_repo"
+          mkdir -p $NEW_REPO_DIR
 
-          # Copy the dist folder contents into the web directory
-          cp -r ./web/dist/* ./web/  # Copy all contents from dist into web directory
+          # Copy the entire repository into the new directory
+          rsync -av --exclude='.git/' --exclude='node_modules/' ./ $NEW_REPO_DIR/
 
-      # Create a zip file of the ragemenu folder
+          # Move the dist folder into the new web directory
+          cp -r ./web/dist $NEW_REPO_DIR/web/  # Copy dist to the new web directory
+
+      # Create a zip file of the new repository
       - name: Create zip file
         run: |
-          mkdir -p ./ragemenu
-          cd ./ragemenu
-          zip -r ../ragemenu.zip .  # Zip all contents in the ragemenu folder
+          cd ./new_repo
+          zip -r ../new_repo.zip .  # Zip all contents in the new repository folder
           cd ..  # Go back to the root directory
 
       # Get the commit message for the release name
@@ -81,6 +84,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./ragemenu.zip  # The zip file we just created
+          asset_path: ./new_repo.zip  # The zip file we just created
           asset_name: ragemenu.zip
           asset_content_type: application/zip
