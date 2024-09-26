@@ -9,6 +9,6 @@ ui_page 'web/dist/index.html'
 file 'web/dist/**'
 
 client_script {
-  'import.lua',
-  'client/main.lua'
+  'client/main.lua',
+  'import.lua'
 }
