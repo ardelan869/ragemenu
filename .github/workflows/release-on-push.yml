@@ -23,7 +23,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16' # or any other Node.js version you need
+          node-version: '20'  # Updated to Node.js version 20
 
       # Install npm dependencies
       - name: Install dependencies
@@ -95,5 +95,5 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./web/dist.zip  # The zip file we just created
-          asset_name: dist.zip
+          asset_name: ragemenu.zip
           asset_content_type: application/zip
