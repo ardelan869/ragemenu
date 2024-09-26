@@ -35,27 +35,28 @@ jobs:
         working-directory: ./web
         run: npm run build
 
-      # Create a new copy of the repository
-      - name: Create new repository copy
+      # Create a new directory for the zip file
+      - name: Prepare files for zip
         run: |
           # Clear the existing web directory
           rm -rf ./web/*  # Clear the web directory
           
           # Copy the dist folder into the web directory
           cp -r ./web/dist/* ./web/  # Copy all contents from dist into web directory
-
-          # Create a new directory for the zip file
-          ZIP_DIR="./zip_content"
-          mkdir -p $ZIP_DIR
           
           # Copy the entire repository into the zip directory excluding unnecessary files
-          rsync -av --exclude='.git/' --exclude='node_modules/' ./ $ZIP_DIR/
+          ZIP_DIR="./zip_content"
+          mkdir -p $ZIP_DIR
+          rsync -av --exclude='.git/' --exclude='node_modules/' --exclude='zip_content/' ./ $ZIP_DIR/
 
-      # Create a zip file of the new repository without an additional folder
+          # Remove the zip_content folder if it exists
+          rm -rf ./zip_content/web/dist  # Delete the dist directory after merging
+
+      # Create a zip file of the repository contents
       - name: Create zip file
         run: |
           cd ./zip_content
-          zip -r ../ragemenu.zip .  # Zip all contents in the zip directory
+          zip -r ../${{ github.event.repository.name }}.zip .  # Zip all contents in the zip directory
           cd ..  # Go back to the root directory
 
       # Delete previous release if it exists
@@ -110,6 +111,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./ragemenu.zip  # The zip file we just created
-          asset_name: ragemenu.zip
+          asset_path: ./${{ github.event.repository.name }}.zip  # The zip file we just created
+          asset_name: ${{ github.event.repository.name }}.zip  # Set asset name to the repository name
           asset_content_type: application/zip
