@@ -125,10 +125,6 @@ function Menu:CloseAll()
   resetNUI();
 end
 
--- TODO: add changeable Banner, etc
----@param menuTitle string
----@param menuSubtitle? string
----@return Menu
 function Menu:Create(menuTitle, menuSubtitle)
   ---@class Menu
   local menu = {
