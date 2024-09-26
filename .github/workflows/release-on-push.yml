@@ -39,6 +39,7 @@ jobs:
       - name: Get latest release
         id: get_latest_release
         run: |
+          # Get the latest tag
           TAG=$(git tag | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -n 1)
           echo "Latest tag: $TAG"
           if [ -z "$TAG" ]; then
@@ -50,10 +51,19 @@ jobs:
       - name: Increment version
         id: increment_version
         run: |
+          # Remove the 'v' and split the version into parts
           IFS='.' read -r major minor patch <<< "${TAG:1}"
           patch=$((patch + 1))  # Increment the patch version
           NEW_TAG="v${major}.${minor}.${patch}"
-          echo "New tag: $NEW_TAG"
+          
+          # Loop to find a new tag if the incremented tag already exists
+          while git rev-parse "$NEW_TAG" >/dev/null 2>&1; do
+            echo "Tag $NEW_TAG already exists. Incrementing patch..."
+            patch=$((patch + 1))  # Increment the patch version
+            NEW_TAG="v${major}.${minor}.${patch}"
+          done
+          
+          echo "New unique tag: $NEW_TAG"
           echo "NEW_TAG=$NEW_TAG" >> $GITHUB_ENV
 
       # Create a zip file of the built artifacts
@@ -63,23 +73,8 @@ jobs:
           zip -r ../dist.zip .  # Create a zip file containing all files in dist
           cd ../../  # Go back to the root directory
 
-      # Check if the new tag already exists
-      - name: Check if tag exists
-        id: check_tag
-        run: |
-          echo "Checking if the tag $NEW_TAG exists..."
-          git tag  # List all tags for debugging
-          if git rev-parse "$NEW_TAG" >/dev/null 2>&1; then
-            echo "Tag $NEW_TAG already exists."
-            echo "exists=true" >> $GITHUB_ENV
-          else
-            echo "Tag $NEW_TAG does not exist."
-            echo "exists=false" >> $GITHUB_ENV
-          fi
-
-      # Create a release only if the tag does not exist
+      # Create a release
       - name: Create a Release
-        if: env.exists == 'false'
         id: create_release
         uses: actions/create-release@v1
         env:
@@ -94,7 +89,6 @@ jobs:
 
       # Upload the built artifacts to the release
       - name: Upload Build Artifacts to Release
-        if: env.exists == 'false'
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
