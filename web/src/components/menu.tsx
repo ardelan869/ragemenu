@@ -7,9 +7,24 @@ import { useKeyDown } from '@/lib/keys';
 import { useNuiEvent } from '@/lib/hooks';
 import { fetchNui } from '@/lib';
 
+interface MenuProps {
+  id: string;
+  resource: string;
+  title: string;
+  subtitle?: string;
+}
+
 export default function Menu() {
+  const [menu, setMenu] = useState<MenuProps | undefined>({
+    id: '',
+    resource: '',
+    title: '',
+    subtitle: ''
+  });
   const [items, setItems] = useState<ItemProps[]>([]);
   const [selected, setSelected] = useState(0);
+
+  useNuiEvent<MenuProps | undefined>('SetMenu', setMenu);
 
   useNuiEvent<ItemProps[]>('SetItems', setItems);
 
@@ -33,7 +48,10 @@ export default function Menu() {
 
     if (index < 0) index = items.length - 1;
 
-    fetchNui('OnSelect', { index });
+    fetchNui('OnSelect', {
+      menu,
+      selected: items[selected].id
+    });
 
     setSelected(index);
   }
@@ -48,7 +66,10 @@ export default function Menu() {
     if (index === items.length)
       index = items.findIndex((c) => c.type !== 'separator') ?? 0;
 
-    fetchNui('OnSelect', { index });
+    fetchNui('OnSelect', {
+      menu,
+      selected: items[selected].id
+    });
 
     setSelected(index);
   }
@@ -68,7 +89,8 @@ export default function Menu() {
     }
 
     fetchNui('OnChange', {
-      index: selected,
+      menu,
+      selected: items[selected].id,
       current: item.current
     });
 
@@ -90,7 +112,8 @@ export default function Menu() {
     }
 
     fetchNui('OnChange', {
-      index: selected,
+      menu,
+      selected: items[selected].id,
       current: item.current
     });
 
@@ -104,27 +127,41 @@ export default function Menu() {
       items[selected].checked = !items[selected].checked;
 
       fetchNui('OnCheck', {
-        index: selected,
+        menu,
+        selected: items[selected].id,
         checked: items[selected].checked
       });
 
       return setItems([...items]);
     }
 
-    fetchNui('OnClick', { index: selected });
+    fetchNui('OnClick', {
+      menu,
+      selected: items[selected].id
+    });
   }
   useKeyDown('Enter', Enter);
   useNuiEvent('Enter', Enter);
 
+  function Escape() {
+    setItems([]);
+    setSelected(0);
+
+    fetchNui('Exit', { menu });
+  }
+  useKeyDown('Escape', Escape);
+  useKeyDown('Backspace', Escape);
+  useNuiEvent('Escape', Escape);
+
   return (
-    items.length > 0 && (
+    menu && (
       <main className="absolute w-[432px] top-5 left-5 tracking-[1px] text-[20px] font-chalet font-black">
         <header className="w-full h-[128px] bg-header-gradient grid place-items-center">
           <h1 className="font-signpainter text-7xl text-white translate-y-2 font-extralight">
-            Test UI
+            {menu.title}
           </h1>
         </header>
-        <SubTitle>INTERAKTIONSMENÜ</SubTitle>
+        <SubTitle> {menu.subtitle}</SubTitle>
         <section>
           {items.map((item, index) => (
             <Item key={item.id} {...item} selected={index === selected}>
