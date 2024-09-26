@@ -23,7 +23,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '20' # or any other Node.js version you need
+          node-version: '16' # or any other Node.js version you need
 
       # Install npm dependencies
       - name: Install dependencies
@@ -50,7 +50,6 @@ jobs:
       - name: Increment version
         id: increment_version
         run: |
-          # Remove the 'v' and split the version into parts
           IFS='.' read -r major minor patch <<< "${TAG:1}"
           patch=$((patch + 1))  # Increment the patch version
           NEW_TAG="v${major}.${minor}.${patch}"
@@ -64,8 +63,20 @@ jobs:
           zip -r ../dist.zip .  # Create a zip file containing all files in dist
           cd ../../  # Go back to the root directory
 
-      # Create a release
+      # Check if the new tag already exists
+      - name: Check if tag exists
+        id: check_tag
+        run: |
+          if git rev-parse "$NEW_TAG" >/dev/null 2>&1; then
+            echo "Tag $NEW_TAG already exists. Exiting..."
+            echo "exists=true" >> $GITHUB_ENV
+          else
+            echo "exists=false" >> $GITHUB_ENV
+          fi
+
+      # Create a release only if the tag does not exist
       - name: Create a Release
+        if: env.exists == 'false'
         id: create_release
         uses: actions/create-release@v1
         env:
@@ -80,6 +91,7 @@ jobs:
 
       # Upload the built artifacts to the release
       - name: Upload Build Artifacts to Release
+        if: env.exists == 'false'
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
