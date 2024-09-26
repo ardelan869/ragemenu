@@ -66,7 +66,6 @@ export default function Menu() {
     setSelected(index);
   }
   useKeyDown('ArrowUp', ArrowUp);
-  useNuiEvent('ArrowUp', ArrowUp);
 
   function ArrowDown() {
     let index = Math.min(items.length, selected + 1);
@@ -84,7 +83,6 @@ export default function Menu() {
     setSelected(index);
   }
   useKeyDown('ArrowDown', ArrowDown);
-  useNuiEvent('ArrowDown', ArrowDown);
 
   function ArrowRight() {
     const item = items[selected];
@@ -107,7 +105,6 @@ export default function Menu() {
     setItems([...items]);
   }
   useKeyDown('ArrowRight', ArrowRight);
-  useNuiEvent('ArrowRight', ArrowRight);
 
   function ArrowLeft() {
     const item = items[selected];
@@ -130,7 +127,6 @@ export default function Menu() {
     setItems([...items]);
   }
   useKeyDown('ArrowLeft', ArrowLeft);
-  useNuiEvent('ArrowLeft', ArrowLeft);
 
   function Enter() {
     if (items[selected].type === 'checkbox') {
@@ -151,7 +147,6 @@ export default function Menu() {
     });
   }
   useKeyDown('Enter', Enter);
-  useNuiEvent('Enter', Enter);
 
   function Escape() {
     setItems([]);
@@ -161,7 +156,6 @@ export default function Menu() {
   }
   useKeyDown('Escape', Escape);
   useKeyDown('Backspace', Escape);
-  useNuiEvent('Escape', Escape);
 
   return (
     menu && (
