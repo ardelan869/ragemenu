@@ -23,7 +23,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '20' # or any other Node.js version you need
+          node-version: '16' # or any other Node.js version you need
 
       # Install npm dependencies
       - name: Install dependencies
@@ -50,7 +50,8 @@ jobs:
       - name: Increment version
         id: increment_version
         run: |
-          IFS='.' read -r major minor patch <<< "${{ env.TAG:1 }}" # Remove the 'v' and split
+          # Remove the 'v' and split the version into parts
+          IFS='.' read -r major minor patch <<< "${TAG:1}"
           patch=$((patch + 1))  # Increment the patch version
           NEW_TAG="v${major}.${minor}.${patch}"
           echo "New tag: $NEW_TAG"
