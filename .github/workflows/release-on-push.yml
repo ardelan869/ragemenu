@@ -35,50 +35,17 @@ jobs:
         working-directory: ./web
         run: npm run build
 
-      # Get the latest release tag
-      - name: Get latest release
-        id: get_latest_release
-        run: |
-          # Get the latest tag
-          TAG=$(git tag | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -n 1)
-          echo "Latest tag: $TAG"
-          if [ -z "$TAG" ]; then
-            TAG="v1.0.0"  # Start with v1.0.0 if no tags exist
-          fi
-          echo "TAG=$TAG" >> $GITHUB_ENV
-
-      # Increment the version
-      - name: Increment version
-        id: increment_version
-        run: |
-          # Remove the 'v' and split the version into parts
-          IFS='.' read -r major minor patch <<< "${TAG:1}"
-          patch=$((patch + 1))  # Increment the patch version
-          NEW_TAG="v${major}.${minor}.${patch}"
-          
-          # Loop to find a new tag if the incremented tag already exists
-          while git rev-parse "$NEW_TAG" >/dev/null 2>&1; do
-            echo "Tag $NEW_TAG already exists. Incrementing patch..."
-            patch=$((patch + 1))  # Increment the patch version
-            NEW_TAG="v${major}.${minor}.${patch}"
-          done
-          
-          echo "New unique tag: $NEW_TAG"
-          echo "NEW_TAG=$NEW_TAG" >> $GITHUB_ENV
-
       # Prepare the output directory
       - name: Prepare output directory
         run: |
-          mkdir -p ./ragemenu/web  # Create the ragemenu directory
-          # Copy the dist folder to the ragemenu/web directory
-          cp -R ./web/dist/* ./ragemenu/web/  # Copy contents of dist
+          # Create a new directory to hold the final output
+          mkdir -p ./ragemenu/web
           
-          # Copy specific Lua files to the ragemenu root directory, if they exist
-          for file in main.lua import.lua meta.lua fxmanifest.lua Readme license; do
-            if [ -f "./client/$file" ]; then
-              cp "./client/$file" "./ragemenu/"  # Copy each Lua file if it exists
-            fi
-          done
+          # Copy original files, excluding ignored files
+          rsync -av --exclude='node_modules' --exclude='.git/' --exclude='*.log' ./ ./ragemenu/
+          
+          # Move the dist folder into the web directory
+          mv ./web/dist ./ragemenu/web/  # Move the built dist folder
 
       # Create a zip file of the ragemenu folder
       - name: Create zip file
@@ -86,22 +53,6 @@ jobs:
           cd ./ragemenu
           zip -r ../ragemenu.zip .  # Zip all contents in the ragemenu folder
           cd ..  # Go back to the root directory
-
-      # Delete the existing release and tag if they exist
-      - name: Delete existing release and tag
-        id: delete_release
-        run: |
-          # Check if the tag exists and delete the release and tag
-          if git rev-parse "$NEW_TAG" >/dev/null 2>&1; then
-            echo "Deleting existing release and tag $NEW_TAG"
-            # Delete the release using GitHub API
-            release_id=$(gh release list --json id,tagName | jq -r ".[] | select(.tagName==\"$NEW_TAG\") | .id")
-            if [ "$release_id" != "" ]; then
-              gh release delete "$NEW_TAG" --yes
-            fi
-            git tag -d "$NEW_TAG"
-            git push origin :refs/tags/"$NEW_TAG"
-          fi
 
       # Get the commit message for the release name
       - name: Get commit message
