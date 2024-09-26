@@ -43,9 +43,10 @@ jobs:
       # Create a zip file of the repository contents
       - name: Create zip file
         run: |
-          ZIP_DIR="./${{ github.event.repository.name }}.zip"
-          # Copy the entire repository excluding unnecessary files
-          rsync -av --exclude='.git/' --exclude='node_modules/' --exclude='zip_content/' ./ $ZIP_DIR
+          ZIP_FILE="./${{ github.event.repository.name }}.zip"  # Name the zip file according to the repo name
+          # Create the zip file with the contents of the repo, excluding unnecessary files
+          zip -r $ZIP_FILE . -x "*.git*" "node_modules/*" "zip_content/*"
+          echo "ZIP_FILE=$ZIP_FILE" >> $GITHUB_ENV  # Set the ZIP_FILE path as an environment variable
 
       # Delete all previous releases and their tags
       - name: Delete all previous releases
@@ -97,6 +98,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./${{ github.event.repository.name }}.zip  # The zip file we just created
+          asset_path: ${{ env.ZIP_FILE }}  # Use the environment variable for the asset path
           asset_name: ${{ github.event.repository.name }}.zip  # Set asset name to the repository name
           asset_content_type: application/zip
