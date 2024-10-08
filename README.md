@@ -1,6 +1,6 @@
 # ragemenu
 
-FiveM native Rage Menu, built with React.
+FiveM native Rage Menu, built with React. [Documentation](https://docs.ardelanyamanel.com/ragemenu)
 
 ## Dependencies
 
@@ -17,17 +17,19 @@ FiveM native Rage Menu, built with React.
 
 1. Download the [latest release](https://github.com/ardelan869/ragemenu/releases/latest) from GitHub.
 
-2. Extract the contents of the zip file into your `resources` folder and remove `-main` from the folder name.
+2. Extract the contents of the zip file into your `resources` folder.
 
 3. Add the path of `meta.lua` to your [Sumneko LLS](https://marketplace.visualstudio.com/items?itemName=sumneko.lua) `workspace.library` setting.
 
 4. Add `ensure ragemenu` to your `server.cfg`.
 
+5. Add `@ragemenu/import.lua` to your desired resources `fxmanifest.lua` and start scripting!
+
 ## Example
 
 > [!NOTE]
 > The menu offers more components and functions.\
-> DOCUMENTATION COMING SOON.
+> See more [here](https://docs.ardelanyamanel.com/ragemenu)
 
 ```lua
 --- you can create a menu once and reopen it at any time
