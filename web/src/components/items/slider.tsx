@@ -6,11 +6,20 @@ export default function Slider({
   className,
   ...props
 }: Omit<React.HTMLAttributes<HTMLElement>, 'children'>) {
-  const { selected, current = 0, max } = useItem() as SliderProps;
+  const {
+    selected,
+    disabled = false,
+    current = 0,
+    max
+  } = useItem() as SliderProps;
 
   return (
     <div
-      className={cn('ml-auto flex items-center gap-1', className)}
+      className={cn(
+        'ml-auto flex items-center gap-1',
+        disabled && 'opacity-50',
+        className
+      )}
       {...props}
     >
       <img

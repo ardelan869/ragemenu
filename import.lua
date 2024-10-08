@@ -160,7 +160,23 @@ function Menu:Create(menuTitle, menuSubtitle)
     self:set('subtitle', subtitle);
   end
 
-  function menu:addComponent(type, label, description, badges, values, checked, current, iconStyle, max, min, step)
+  function menu:RemoveComponent(id)
+    for index, component in next, self.__components do
+      if component.id == id then
+        table.remove(self.__components, index);
+
+        SendNUIMessage({
+          action = 'RemoveItem',
+          data = id
+        });
+
+        break;
+      end
+    end
+  end
+
+  function menu:addComponent(type, label, description, badges, disabled, values, checked, current, iconStyle, max, min,
+                             step)
     ---@type MenuComponent
     local component = {
       id = generateUUID(),
@@ -168,6 +184,8 @@ function Menu:Create(menuTitle, menuSubtitle)
       label = label,
       description = description,
       badges = badges,
+      disabled = disabled,
+      visible = true,
       values = values,
       checked = checked,
       current = current,
@@ -288,6 +306,18 @@ function Menu:Create(menuTitle, menuSubtitle)
       end
     end
 
+    function component:Disable(disable)
+      self:set('disabled', disable);
+    end
+
+    function component:ToggleVisiblity(visible)
+      self:set('visible', visible);
+    end
+
+    function component:Remove()
+      menu:RemoveComponent(self.id);
+    end
+
     function component:toJSON()
       return {
         id = self.id,
@@ -295,6 +325,7 @@ function Menu:Create(menuTitle, menuSubtitle)
         label = self.label,
         description = self.description,
         badges = self.badges,
+        disabled = self.disabled,
         values = self.values,
         checked = self.checked,
         current = self.current,
@@ -317,12 +348,12 @@ function Menu:Create(menuTitle, menuSubtitle)
     return component;
   end
 
-  function menu:AddButton(label, description, badges)
-    return self:addComponent('button', label, description, badges);
+  function menu:AddButton(label, description, badges, disabled)
+    return self:addComponent('button', label, description, badges, disabled);
   end
 
-  function menu:AddSubmenu(submenu, label, description, badges)
-    local button = self:AddButton(label, description, badges);
+  function menu:AddSubmenu(submenu, label, description, badges, disabled)
+    local button = self:AddButton(label, description, badges, disabled);
 
     button:OnClick(function()
       local subMenu = Menu:GetById(type(submenu) == 'string' and submenu or submenu.id);
@@ -337,20 +368,20 @@ function Menu:Create(menuTitle, menuSubtitle)
     return button;
   end
 
-  function menu:AddSeparator(label, badges)
-    return self:addComponent('separator', label, nil, badges);
+  function menu:AddSeparator(label, badges, disabled)
+    return self:addComponent('separator', label, nil, badges, disabled);
   end
 
-  function menu:AddCheckbox(label, description, badges, checked, iconStyle)
-    return self:addComponent('checkbox', label, description, badges, nil, checked, nil, iconStyle);
+  function menu:AddCheckbox(label, description, badges, checked, iconStyle, disabled)
+    return self:addComponent('checkbox', label, description, badges, disabled, nil, checked, nil, iconStyle);
   end
 
-  function menu:AddList(label, description, badges, values, current)
-    return self:addComponent('list', label, description, badges, values, nil, current);
+  function menu:AddList(label, description, badges, values, current, disabled)
+    return self:addComponent('list', label, description, badges, disabled, values, nil, current);
   end
 
-  function menu:AddSlider(label, description, badges, max, min, step, current)
-    return self:addComponent('slider', label, description, badges, nil, nil, current or 0, nil, max, min, step);
+  function menu:AddSlider(label, description, badges, max, min, step, current, disabled)
+    return self:addComponent('slider', label, description, badges, disabled, nil, nil, current or 0, nil, max, min, step);
   end
 
   function menu:Open()

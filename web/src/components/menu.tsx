@@ -5,7 +5,7 @@ import Description from '@/components/description';
 import { useState } from 'react';
 import { useKeyDown } from '@/lib/keys';
 import { useNuiEvent } from '@/lib/hooks';
-import { fetchNui } from '@/lib';
+import { fetchNui, findLastIndex } from '@/lib';
 
 interface MenuProps {
   id: string;
@@ -38,6 +38,10 @@ export default function Menu() {
     setItems([...items, item]);
   });
 
+  useNuiEvent<string>('RemoveItem', (id) => {
+    setItems((items) => items.filter((i) => i.id !== id));
+  });
+
   useNuiEvent<ItemProps>('UpdateItem', (item) => {
     const index = items.findIndex((i) => i.id === item.id);
 
@@ -54,13 +58,17 @@ export default function Menu() {
   function ArrowUp() {
     let index = Math.max(-1, selected - 1);
 
-    if (items[index]?.type === 'separator') index--;
+    if (items[index]?.type === 'separator' || items[index]?.disabled) index--;
 
-    if (index < 0) index = items.length - 1;
+    if (index < 0)
+      index = findLastIndex(
+        items,
+        (c) => !c.disabled && c.visible !== false && c.type !== 'separator'
+      );
 
     fetchNui('OnSelect', {
       menu,
-      selected: items[selected].id
+      selected: items[index].id
     });
 
     setSelected(index);
@@ -70,14 +78,19 @@ export default function Menu() {
   function ArrowDown() {
     let index = Math.min(items.length, selected + 1);
 
-    if (items[index]?.type === 'separator') index += 1;
+    if (items[index]?.type === 'separator' || items[index]?.disabled)
+      index += 1;
 
     if (index === items.length)
-      index = items.findIndex((c) => c.type !== 'separator') ?? 0;
+      index = items.findIndex(
+        (c) => !c.disabled && c.visible !== false && c.type !== 'separator'
+      );
+
+    if (index < 0) return;
 
     fetchNui('OnSelect', {
       menu,
-      selected: items[selected].id
+      selected: items[index].id
     });
 
     setSelected(index);
@@ -86,6 +99,9 @@ export default function Menu() {
 
   function ArrowRight() {
     const item = items[selected];
+
+    if (item.type === 'separator' || item.disabled || item.visible !== true)
+      return;
 
     if (item.type === 'list') {
       if (item.current === item.values.length - 1) item.current = 0;
@@ -109,6 +125,9 @@ export default function Menu() {
   function ArrowLeft() {
     const item = items[selected];
 
+    if (item.type === 'separator' || item.disabled || item.visible !== true)
+      return;
+
     if (item.type === 'list') {
       if (item.current === 0) item.current = item.values.length - 1;
       else item.current--;
@@ -129,13 +148,18 @@ export default function Menu() {
   useKeyDown('ArrowLeft', ArrowLeft);
 
   function Enter() {
-    if (items[selected].type === 'checkbox') {
-      items[selected].checked = !items[selected].checked;
+    const item = items[selected];
+
+    if (item.type === 'separator' || item.disabled || item.visible !== true)
+      return;
+
+    if (item.type === 'checkbox') {
+      item.checked = !item.checked;
 
       fetchNui('OnCheck', {
         menu,
-        selected: items[selected].id,
-        checked: items[selected].checked
+        selected: item.id,
+        checked: item.checked
       });
 
       return setItems([...items]);
@@ -143,7 +167,7 @@ export default function Menu() {
 
     fetchNui('OnClick', {
       menu,
-      selected: items[selected].id
+      selected: item.id
     });
   }
   useKeyDown('Enter', Enter);
@@ -165,7 +189,7 @@ export default function Menu() {
             {menu.title}
           </h1>
         </header>
-        <SubTitle>{menu.subtitle}</SubTitle>
+        {menu.subtitle && <SubTitle>{menu.subtitle}</SubTitle>}
         <section>
           {items.map((item, index) => (
             <Item key={item.id} {...item} selected={index === selected}>

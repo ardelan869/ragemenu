@@ -7,11 +7,20 @@ export default function List({
   className,
   ...props
 }: Omit<React.HTMLAttributes<HTMLElement>, 'children'>) {
-  const { selected, values = [], current = 0 } = useItem() as ListProps;
+  const {
+    selected,
+    disabled = false,
+    values = [],
+    current = 0
+  } = useItem() as ListProps;
 
   return (
     <div
-      className={cn('ml-auto flex items-center gap-1', className)}
+      className={cn(
+        'ml-auto flex items-center gap-1',
+        disabled && 'opacity-50',
+        className
+      )}
       {...props}
     >
       <img

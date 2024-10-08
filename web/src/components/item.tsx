@@ -20,6 +20,8 @@ export interface BaseProps {
     left?: BadgeName;
     right?: BadgeName;
   };
+  disabled?: boolean;
+  visible?: boolean;
   values?: string[];
   checked?: boolean;
   current?: number;
@@ -75,6 +77,8 @@ function Item({
   label,
   description,
   badges,
+  disabled = false,
+  visible = true,
   checked = false,
   values = [],
   current = 0,
@@ -85,6 +89,8 @@ function Item({
   children,
   ...props
 }: React.HTMLAttributes<HTMLElement> & ItemProps) {
+  if (!visible) return null;
+
   return (
     <ItemContext.Provider
       value={
@@ -111,6 +117,7 @@ function Item({
             ? 'bg-selected-item-gradient text-black'
             : 'bg-[#0A0A0A]/50 text-white',
           type === 'separator' && 'justify-center',
+          disabled && 'text-opacity-50',
           className
         )}
         {...props}

@@ -49,7 +49,7 @@ export default function Badge({
   name: BadgeName;
   align?: 'left' | 'right';
 }) {
-  const { selected } = useItem();
+  const { selected, disabled = false } = useItem();
 
   if (!name) return null;
 
@@ -59,6 +59,7 @@ export default function Badge({
         'w-7 h-7 object-contain',
         align === 'left' ? 'mr-1' : 'ml-1',
         selected && 'invert',
+        disabled && 'opacity-50',
         className
       )}
       {...props}

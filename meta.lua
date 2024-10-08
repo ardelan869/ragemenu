@@ -1,3 +1,5 @@
+-- The only purpose of this file is to add types for the sumneko.lua extension
+
 ---@meta
 
 ---@class CallbackRequest
@@ -53,6 +55,7 @@
 ---@field label string
 ---@field description? string
 ---@field badges? { left?: BadgeName; right?: BadgeName }
+---@field disabled? boolean
 ---@field values? string[]
 ---@field checked? boolean
 ---@field current? number
@@ -70,6 +73,9 @@
 ---@field SetLabel fun(self: self, label: string)
 ---@field SetDescription fun(self: self, description: string)
 ---@field SetBadges fun(self: self, badges: { left?: BadgeName; right?: BadgeName })
+---@field Disable fun(self: self, disable: boolean)
+---@field ToggleVisiblity fun(self: self, visible: boolean)
+---@field Remove fun(self: self)
 ---@field toJSON fun(self: self): MenuComponentData
 
 ---@class CheckboxComponent:MenuComponentBase
@@ -114,13 +120,14 @@
 ---@field set fun(self: self, key: string, value: any)
 ---@field SetTitle fun(self: self, title: string)
 ---@field SetSubtitle fun(self: self, subtitle: string)
----@field addComponent fun(self: self, type: MenuType, label: string, description?: string, badges?: { left?: BadgeName; right?: BadgeName }, values?: string[], checked?: boolean, current?: number, iconStyle?: 'cross' | 'tick', max?: number, min?: number, step?: number): MenuComponent
----@field AddButton fun(self: self, label: string, description?: string, badges?: { left?: BadgeName; right?: BadgeName }): MenuComponentBase
----@field AddSubmenu fun(self: self, submenu: Menu | { id: string } | string, label: string, description?: string, badges?: { left?: BadgeName; right?: BadgeName }): MenuComponentBase
----@field AddSeparator fun(self: self, label: string, badges?: { left?: BadgeName; right?: BadgeName }): MenuComponentBase
----@field AddCheckbox fun(self: self, label: string, description?: string, badges?: { left?: BadgeName; right?: BadgeName }, checked?: boolean, iconStyle?: 'cross' | 'tick'): CheckboxComponent
----@field AddList fun(self: self, label: string, description?: string, badges?: { left?: BadgeName; right?: BadgeName }, values: string[], current: number): ListComponent
----@field AddSlider fun(self: self, label: string, description?: string, badges?: { left?: BadgeName; right?: BadgeName }, max: number, min?: number, step?: number, current?: number): SliderComponent
+---@field RemoveComponent fun(self: self, id: string)
+---@field addComponent fun(self: self, type: MenuType, label: string, description?: string, badges?: { left?: BadgeName; right?: BadgeName }, disabled?: boolean, values?: string[], checked?: boolean, current?: number, iconStyle?: 'cross' | 'tick', max?: number, min?: number, step?: number): MenuComponent
+---@field AddButton fun(self: self, label: string, description?: string, badges?: { left?: BadgeName; right?: BadgeName }, disabled?: boolean): MenuComponentBase
+---@field AddSubmenu fun(self: self, submenu: Menu | { id: string } | string, label: string, description?: string, badges?: { left?: BadgeName; right?: BadgeName }, disabled?: boolean): MenuComponentBase
+---@field AddSeparator fun(self: self, label: string, badges?: { left?: BadgeName; right?: BadgeName }, disabled?: boolean): MenuComponentBase
+---@field AddCheckbox fun(self: self, label: string, description?: string, badges?: { left?: BadgeName; right?: BadgeName }, checked?: boolean, iconStyle?: 'cross' | 'tick', disabled?: boolean): CheckboxComponent
+---@field AddList fun(self: self, label: string, description?: string, badges?: { left?: BadgeName; right?: BadgeName }, values: string[], current?: number, disabled?: boolean): ListComponent
+---@field AddSlider fun(self: self, label: string, description?: string, badges?: { left?: BadgeName; right?: BadgeName }, max: number, min?: number, step?: number, current?: number, disabled?: boolean): SliderComponent
 ---@field Open fun(self: self)
 ---@field Close fun(self: self)
 ---@field IsOpen fun(self: self): boolean

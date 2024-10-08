@@ -10,11 +10,21 @@ export default function Checkbox({
   className,
   ...props
 }: React.ImgHTMLAttributes<HTMLImageElement>) {
-  const { selected, checked = false, iconStyle = 'tick' } = useItem();
+  const {
+    selected,
+    disabled = false,
+    checked = false,
+    iconStyle = 'tick'
+  } = useItem();
 
   return (
     <img
-      className={cn('w-5 h-5 ml-auto', selected && 'invert', className)}
+      className={cn(
+        'w-5 h-5 ml-auto',
+        selected && 'invert',
+        disabled && 'opacity-50',
+        className
+      )}
       {...props}
       src={checked ? IMG_SRC[iconStyle] : 'assets/images/shop_box_blank.png'}
     />

@@ -12,3 +12,5 @@ client_script {
   'client/main.lua',
   'import.lua'
 }
+
+server_script 'server/version.lua'
