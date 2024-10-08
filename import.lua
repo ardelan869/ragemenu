@@ -306,8 +306,10 @@ function Menu:Create(menuTitle, menuSubtitle)
       end
     end
 
-    function component:Disable(disable)
-      self:set('disabled', disable);
+    if component.type ~= 'separator' then
+      function component:Disable(disable)
+        self:set('disabled', disable);
+      end
     end
 
     function component:ToggleVisiblity(visible)
@@ -368,8 +370,8 @@ function Menu:Create(menuTitle, menuSubtitle)
     return button;
   end
 
-  function menu:AddSeparator(label, badges, disabled)
-    return self:addComponent('separator', label, nil, badges, disabled);
+  function menu:AddSeparator(label, badges)
+    return self:addComponent('separator', label, nil, badges);
   end
 
   function menu:AddCheckbox(label, description, badges, checked, iconStyle, disabled)
