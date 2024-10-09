@@ -381,20 +381,20 @@ function Menu:Create(menuTitle, menuSubtitle, menuWidth, maxVisibleItems)
     return button;
   end
 
-  function menu:AddSeparator(label, rightLabel, badges)
-    return self:addComponent('separator', label, rightLabel, nil, badges);
+  function menu:AddSeparator(label, badges)
+    return self:addComponent('separator', label, nil, nil, badges);
   end
 
-  function menu:AddCheckbox(label, rightLabel, description, badges, checked, iconStyle, disabled)
-    return self:addComponent('checkbox', label, rightLabel, description, badges, disabled, nil, checked, nil, iconStyle);
+  function menu:AddCheckbox(label, description, badges, checked, iconStyle, disabled)
+    return self:addComponent('checkbox', label, nil, description, badges, disabled, nil, checked, nil, iconStyle);
   end
 
-  function menu:AddList(label, rightLabel, description, badges, values, current, disabled)
-    return self:addComponent('list', label, rightLabel, description, badges, disabled, values, nil, current);
+  function menu:AddList(label, description, badges, values, current, disabled)
+    return self:addComponent('list', label, nil, description, badges, disabled, values, nil, current);
   end
 
-  function menu:AddSlider(label, rightLabel, description, badges, max, min, step, current, disabled)
-    return self:addComponent('slider', label, rightLabel, description, badges, disabled, nil, nil, current or 0, nil, max,
+  function menu:AddSlider(label, description, badges, max, min, step, current, disabled)
+    return self:addComponent('slider', label, nil, description, badges, disabled, nil, nil, current or 0, nil, max,
       min, step);
   end
 

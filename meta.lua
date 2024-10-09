@@ -134,10 +134,10 @@
 ---@field addComponent fun(self: self, type: MenuType, label: string, rightLabel?: string, description?: string, badges?: { left?: BadgeName; right?: BadgeName }, disabled?: boolean, values?: string[], checked?: boolean, current?: number, iconStyle?: 'cross' | 'tick', max?: number, min?: number, step?: number): MenuComponent
 ---@field AddButton fun(self: self, label: string, rightLabel?: string, description?: string, badges?: { left?: BadgeName; right?: BadgeName }, disabled?: boolean): MenuComponentBase
 ---@field AddSubmenu fun(self: self, submenu: Menu | { id: string } | string, label: string, rightLabel?: string, description?: string, badges?: { left?: BadgeName; right?: BadgeName }, disabled?: boolean): MenuComponentBase
----@field AddSeparator fun(self: self, label: string, rightLabel?: string, badges?: { left?: BadgeName; right?: BadgeName }): SeparatorComponent
----@field AddCheckbox fun(self: self, label: string, rightLabel?: string, description?: string, badges?: { left?: BadgeName; right?: BadgeName }, checked?: boolean, iconStyle?: 'cross' | 'tick', disabled?: boolean): CheckboxComponent
----@field AddList fun(self: self, label: string, rightLabel?: string, description?: string, badges?: { left?: BadgeName; right?: BadgeName }, values: string[], current?: number, disabled?: boolean): ListComponent
----@field AddSlider fun(self: self, label: string, rightLabel?: string, description?: string, badges?: { left?: BadgeName; right?: BadgeName }, max: number, min?: number, step?: number, current?: number, disabled?: boolean): SliderComponent
+---@field AddSeparator fun(self: self, label: string, badges?: { left?: BadgeName; right?: BadgeName }): SeparatorComponent
+---@field AddCheckbox fun(self: self, label: string, description?: string, badges?: { left?: BadgeName; right?: BadgeName }, checked?: boolean, iconStyle?: 'cross' | 'tick', disabled?: boolean): CheckboxComponent
+---@field AddList fun(self: self, label: string, description?: string, badges?: { left?: BadgeName; right?: BadgeName }, values: string[], current?: number, disabled?: boolean): ListComponent
+---@field AddSlider fun(self: self, label: string, description?: string, badges?: { left?: BadgeName; right?: BadgeName }, max: number, min?: number, step?: number, current?: number, disabled?: boolean): SliderComponent
 ---@field Open fun(self: self)
 ---@field Close fun(self: self)
 ---@field IsOpen fun(self: self): boolean
