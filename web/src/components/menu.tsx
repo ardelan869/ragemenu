@@ -2,7 +2,7 @@ import Item, { type ItemProps } from '@/components/item';
 import SubTitle from '@/components/sub-title';
 import Description from '@/components/description';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useKeyDown } from '@/lib/keys';
 import { useNuiEvent } from '@/lib/hooks';
 import { fetchNui, findLastIndex } from '@/lib';
@@ -12,6 +12,8 @@ interface MenuProps {
   resource: string;
   title: string;
   subtitle?: string;
+  width: number;
+  maxVisibleItems: number;
 }
 
 export default function Menu() {
@@ -66,11 +68,6 @@ export default function Menu() {
         (c) => !c.disabled && c.visible !== false && c.type !== 'separator'
       );
 
-    fetchNui('OnSelect', {
-      menu,
-      selected: items[index].id
-    });
-
     setSelected(index);
   }
   useKeyDown('ArrowUp', ArrowUp);
@@ -87,11 +84,6 @@ export default function Menu() {
       );
 
     if (index < 0) return;
-
-    fetchNui('OnSelect', {
-      menu,
-      selected: items[index].id
-    });
 
     setSelected(index);
   }
@@ -181,16 +173,35 @@ export default function Menu() {
   useKeyDown('Escape', Escape);
   useKeyDown('Backspace', Escape);
 
+  useEffect(() => {
+    if (!menu || !items || !items[selected]) return;
+
+    document.getElementById(`item-${items[selected].id}`)?.scrollIntoView({
+      block: 'center'
+    });
+
+    fetchNui('OnSelect', {
+      menu,
+      selected: items[selected].id
+    });
+  }, [selected, menu, items]);
+
   return (
     menu && (
-      <main className="absolute w-[432px] top-5 left-5 tracking-[1px] text-[20px] font-chalet font-black">
+      <main
+        className="absolute w-[432px] top-5 left-5 tracking-[1px] text-[20px] font-chalet font-black"
+        style={{ width: `${menu.width}px` }}
+      >
         <header className="w-full h-[128px] bg-header-gradient grid place-items-center">
           <h1 className="font-signpainter text-7xl text-white translate-y-2 font-extralight">
             {menu.title}
           </h1>
         </header>
         {menu.subtitle && <SubTitle>{menu.subtitle}</SubTitle>}
-        <section>
+        <section
+          className="overflow-y-scroll"
+          style={{ maxHeight: `${menu.maxVisibleItems * 38}px` }}
+        >
           {items.map((item, index) => (
             <Item key={item.id} {...item} selected={index === selected}>
               <Item.Text
@@ -198,6 +209,11 @@ export default function Menu() {
               >
                 {item.label}
               </Item.Text>
+              {item.rightLabel && (
+                <Item.Text className="justify-self-end">
+                  {item.rightLabel}
+                </Item.Text>
+              )}
             </Item>
           ))}
         </section>

@@ -15,6 +15,7 @@ export interface BaseProps {
   selected?: boolean;
   type: ItemType;
   label: string;
+  rightLabel?: string;
   description?: string;
   badges?: {
     left?: BadgeName;
@@ -111,8 +112,9 @@ function Item({
       }
     >
       <section
+        id={`item-${id}`}
         className={cn(
-          'h-[38px] px-[10px] py-1  flex items-center',
+          'h-[38px] px-[10px] py-1 flex items-center',
           selected
             ? 'bg-selected-item-gradient text-black'
             : 'bg-[#0A0A0A]/50 text-white',

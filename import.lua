@@ -2,9 +2,13 @@ if IsDuplicityVersion() then
   error('This resource is client-side only.', 0);
 end
 
+if Menu then
+  error('Menu already exists, ensure that you are not loading this resource twice.', 0);
+end
+
 ---@return string
 local function generateUUID()
-  local uuid <const> = string.gsub('xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx', '[xy]', function(c)
+  local uuid = string.gsub('xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx', '[xy]', function(c)
     local v = (c == 'x') and math.random(0, 0xf) or math.random(8, 0xb);
 
     return string.format('%x', v);
@@ -13,7 +17,7 @@ local function generateUUID()
   return uuid;
 end
 
-local import <const> = exports.ragemenu;
+local import = exports.ragemenu;
 
 ---@param message any
 local function SendNUIMessage(message)
@@ -125,13 +129,15 @@ function Menu:CloseAll()
   resetNUI();
 end
 
-function Menu:Create(menuTitle, menuSubtitle)
+function Menu:Create(menuTitle, menuSubtitle, menuWidth, maxVisibleItems)
   ---@class Menu
   local menu = {
     id = generateUUID(),
     resource = GetCurrentResourceName(),
     title = menuTitle,
     subtitle = menuSubtitle,
+    width = menuWidth,
+    maxVisibleItems = maxVisibleItems,
     __components = {}
   };
 
@@ -175,13 +181,14 @@ function Menu:Create(menuTitle, menuSubtitle)
     end
   end
 
-  function menu:addComponent(type, label, description, badges, disabled, values, checked, current, iconStyle, max, min,
-                             step)
+  function menu:addComponent(type, label, rightLabel, description, badges, disabled, values, checked, current, iconStyle,
+                             max, min, step)
     ---@type MenuComponent
     local component = {
       id = generateUUID(),
       type = type,
       label = label,
+      rightLabel = rightLabel,
       description = description,
       badges = badges,
       disabled = disabled,
@@ -254,10 +261,6 @@ function Menu:Create(menuTitle, menuSubtitle)
       end
     end
 
-    function component:OnSelect(func)
-      return self:on('select', func);
-    end
-
     if component.type == 'checkbox' then
       function component:SetChecked(checked)
         self:set('checked', checked);
@@ -269,10 +272,6 @@ function Menu:Create(menuTitle, menuSubtitle)
 
       function component:OnCheck(func)
         return self:on('check', func);
-      end
-    else
-      function component:OnClick(func)
-        return self:on('click', func);
       end
     end
 
@@ -307,8 +306,20 @@ function Menu:Create(menuTitle, menuSubtitle)
     end
 
     if component.type ~= 'separator' then
+      function component:OnClick(func)
+        return self:on('click', func);
+      end
+
       function component:Disable(disable)
         self:set('disabled', disable);
+      end
+
+      function component:SetRightLabel(rightLabel)
+        self:set('rightLabel', rightLabel);
+      end
+
+      function component:OnSelect(func)
+        return self:on('select', func);
       end
     end
 
@@ -350,12 +361,12 @@ function Menu:Create(menuTitle, menuSubtitle)
     return component;
   end
 
-  function menu:AddButton(label, description, badges, disabled)
-    return self:addComponent('button', label, description, badges, disabled);
+  function menu:AddButton(label, rightLabel, description, badges, disabled)
+    return self:addComponent('button', label, rightLabel, description, badges, disabled);
   end
 
-  function menu:AddSubmenu(submenu, label, description, badges, disabled)
-    local button = self:AddButton(label, description, badges, disabled);
+  function menu:AddSubmenu(submenu, label, rightLabel, description, badges, disabled)
+    local button = self:AddButton(label, rightLabel, description, badges, disabled);
 
     button:OnClick(function()
       local subMenu = Menu:GetById(type(submenu) == 'string' and submenu or submenu.id);
@@ -370,20 +381,21 @@ function Menu:Create(menuTitle, menuSubtitle)
     return button;
   end
 
-  function menu:AddSeparator(label, badges)
-    return self:addComponent('separator', label, nil, badges);
+  function menu:AddSeparator(label, rightLabel, badges)
+    return self:addComponent('separator', label, rightLabel, nil, badges);
   end
 
-  function menu:AddCheckbox(label, description, badges, checked, iconStyle, disabled)
-    return self:addComponent('checkbox', label, description, badges, disabled, nil, checked, nil, iconStyle);
+  function menu:AddCheckbox(label, rightLabel, description, badges, checked, iconStyle, disabled)
+    return self:addComponent('checkbox', label, rightLabel, description, badges, disabled, nil, checked, nil, iconStyle);
   end
 
-  function menu:AddList(label, description, badges, values, current, disabled)
-    return self:addComponent('list', label, description, badges, disabled, values, nil, current);
+  function menu:AddList(label, rightLabel, description, badges, values, current, disabled)
+    return self:addComponent('list', label, rightLabel, description, badges, disabled, values, nil, current);
   end
 
-  function menu:AddSlider(label, description, badges, max, min, step, current, disabled)
-    return self:addComponent('slider', label, description, badges, disabled, nil, nil, current or 0, nil, max, min, step);
+  function menu:AddSlider(label, rightLabel, description, badges, max, min, step, current, disabled)
+    return self:addComponent('slider', label, rightLabel, description, badges, disabled, nil, nil, current or 0, nil, max,
+      min, step);
   end
 
   function menu:Open()

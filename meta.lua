@@ -71,6 +71,7 @@
 ---@field OnSelect fun(self: self, func: fun(component: MenuComponent)): fun()
 ---@field OnClick fun(self: self, func: fun(component: MenuComponent)): fun()
 ---@field SetLabel fun(self: self, label: string)
+---@field SetRightLabel fun(self: self, rightLabel: string)
 ---@field SetDescription fun(self: self, description: string)
 ---@field SetBadges fun(self: self, badges: { left?: BadgeName; right?: BadgeName })
 ---@field Disable fun(self: self, disable: boolean)
@@ -107,13 +108,22 @@
 ---@field SetMin fun(self: self, min: number)
 ---@field SetStep fun(self: self, step: number)
 
----@class MenuComponent:MenuComponentBase, CheckboxComponent, ListComponent, SliderComponent
+---@class SeparatorComponent:MenuComponentBase
+---@field type 'separator'
+---@field OnClick nil
+---@field OnSelect nil
+---@field Disable nil
+---@field SetRightLabel nil
+
+---@class MenuComponent:MenuComponentBase, CheckboxComponent, ListComponent, SliderComponent, SeparatorComponent
 
 ---@class MenuData
 ---@field id string
 ---@field resource string
 ---@field title string
 ---@field subtitle? string
+---@field width? number
+---@field maxVisibleItems? number
 
 ---@class Menu:MenuData
 ---@field __components MenuComponent[]
@@ -121,13 +131,13 @@
 ---@field SetTitle fun(self: self, title: string)
 ---@field SetSubtitle fun(self: self, subtitle: string)
 ---@field RemoveComponent fun(self: self, id: string)
----@field addComponent fun(self: self, type: MenuType, label: string, description?: string, badges?: { left?: BadgeName; right?: BadgeName }, disabled?: boolean, values?: string[], checked?: boolean, current?: number, iconStyle?: 'cross' | 'tick', max?: number, min?: number, step?: number): MenuComponent
----@field AddButton fun(self: self, label: string, description?: string, badges?: { left?: BadgeName; right?: BadgeName }, disabled?: boolean): MenuComponentBase
----@field AddSubmenu fun(self: self, submenu: Menu | { id: string } | string, label: string, description?: string, badges?: { left?: BadgeName; right?: BadgeName }, disabled?: boolean): MenuComponentBase
----@field AddSeparator fun(self: self, label: string, badges?: { left?: BadgeName; right?: BadgeName }): MenuComponentBase
----@field AddCheckbox fun(self: self, label: string, description?: string, badges?: { left?: BadgeName; right?: BadgeName }, checked?: boolean, iconStyle?: 'cross' | 'tick', disabled?: boolean): CheckboxComponent
----@field AddList fun(self: self, label: string, description?: string, badges?: { left?: BadgeName; right?: BadgeName }, values: string[], current?: number, disabled?: boolean): ListComponent
----@field AddSlider fun(self: self, label: string, description?: string, badges?: { left?: BadgeName; right?: BadgeName }, max: number, min?: number, step?: number, current?: number, disabled?: boolean): SliderComponent
+---@field addComponent fun(self: self, type: MenuType, label: string, rightLabel?: string, description?: string, badges?: { left?: BadgeName; right?: BadgeName }, disabled?: boolean, values?: string[], checked?: boolean, current?: number, iconStyle?: 'cross' | 'tick', max?: number, min?: number, step?: number): MenuComponent
+---@field AddButton fun(self: self, label: string, rightLabel?: string, description?: string, badges?: { left?: BadgeName; right?: BadgeName }, disabled?: boolean): MenuComponentBase
+---@field AddSubmenu fun(self: self, submenu: Menu | { id: string } | string, label: string, rightLabel?: string, description?: string, badges?: { left?: BadgeName; right?: BadgeName }, disabled?: boolean): MenuComponentBase
+---@field AddSeparator fun(self: self, label: string, rightLabel?: string, badges?: { left?: BadgeName; right?: BadgeName }): SeparatorComponent
+---@field AddCheckbox fun(self: self, label: string, rightLabel?: string, description?: string, badges?: { left?: BadgeName; right?: BadgeName }, checked?: boolean, iconStyle?: 'cross' | 'tick', disabled?: boolean): CheckboxComponent
+---@field AddList fun(self: self, label: string, rightLabel?: string, description?: string, badges?: { left?: BadgeName; right?: BadgeName }, values: string[], current?: number, disabled?: boolean): ListComponent
+---@field AddSlider fun(self: self, label: string, rightLabel?: string, description?: string, badges?: { left?: BadgeName; right?: BadgeName }, max: number, min?: number, step?: number, current?: number, disabled?: boolean): SliderComponent
 ---@field Open fun(self: self)
 ---@field Close fun(self: self)
 ---@field IsOpen fun(self: self): boolean
@@ -139,7 +149,7 @@
 ---@field __cached Menu[]
 ---@field current? string
 ---@field opened string[]
----@field Create fun(self: self, title: string, subtitle?: string): Menu
+---@field Create fun(self: self, title: string, subtitle?: string, width?: number, maxVisibleItems?: number): Menu
 ---@field GetById fun(self: self, id: string): Menu?
 ---@field GetOpened fun(self: self): Menu?
 ---@field Open fun(self: self, menu: Menu)
