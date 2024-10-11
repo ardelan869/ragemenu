@@ -5,15 +5,15 @@ import Description from '@/components/description';
 import { useEffect, useState } from 'react';
 import { useKeyDown } from '@/lib/keys';
 import { useNuiEvent } from '@/lib/hooks';
-import { fetchNui, findLastIndex } from '@/lib';
+import { debugData, fetchNui, findLastIndex } from '@/lib';
 
 interface MenuProps {
   id: string;
   resource: string;
   title: string;
   subtitle?: string;
-  width: number;
-  maxVisibleItems: number;
+  width?: number;
+  maxVisibleItems?: number;
 }
 
 export default function Menu() {
@@ -186,11 +186,70 @@ export default function Menu() {
     });
   }, [selected, menu, items]);
 
+  useEffect(() => {
+    debugData([
+      {
+        action: 'SetMenu',
+        data: {
+          id: 'test',
+          resource: 'ragemenu',
+          title: 'Test',
+          width: 432,
+          maxVisibleItems: 10
+        }
+      },
+      {
+        action: 'SetItems',
+        data: [
+          {
+            id: 'test',
+            label: 'Test',
+            type: 'checkbox',
+            checked: true
+          },
+          {
+            id: 'test2',
+            label: 'Test2',
+            type: 'button',
+            rightLabel: 'Test'
+          },
+          {
+            id: 'test3',
+            label: 'Test3',
+            type: 'slider',
+            min: 0,
+            max: 100,
+            step: 1,
+            current: 50
+          },
+          {
+            id: 'test4',
+            label: 'Test4',
+            type: 'list',
+            values: ['Test', 'Test2', 'Test3'],
+            current: 0
+          },
+          {
+            id: 'test5',
+            label: 'Test5',
+            type: 'separator'
+          },
+          {
+            id: 'test6',
+            label: 'Test6',
+            type: 'button',
+            rightLabel: 'Test'
+          }
+        ]
+      }
+    ]);
+  }, []);
+
   return (
     menu && (
       <main
         className="absolute w-[432px] top-5 left-5 tracking-[1px] text-[20px] font-chalet font-black"
-        style={{ width: `${menu.width}px` }}
+        style={{ width: `${menu.width || 432}px` }}
       >
         <header className="w-full h-[128px] bg-header-gradient grid place-items-center">
           <h1 className="font-signpainter text-7xl text-white translate-y-2 font-extralight">
@@ -200,7 +259,7 @@ export default function Menu() {
         {menu.subtitle && <SubTitle>{menu.subtitle}</SubTitle>}
         <section
           className="overflow-y-scroll"
-          style={{ maxHeight: `${menu.maxVisibleItems * 38}px` }}
+          style={{ maxHeight: `${(menu.maxVisibleItems || 10) * 38}px` }}
         >
           {items.map((item, index) => (
             <Item key={item.id} {...item} selected={index === selected}>
@@ -209,11 +268,6 @@ export default function Menu() {
               >
                 {item.label}
               </Item.Text>
-              {item.rightLabel && (
-                <Item.Text className="justify-self-end">
-                  {item.rightLabel}
-                </Item.Text>
-              )}
             </Item>
           ))}
         </section>

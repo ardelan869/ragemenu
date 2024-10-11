@@ -88,6 +88,7 @@ function Item({
   min = 0,
   className,
   children,
+  rightLabel,
   ...props
 }: React.HTMLAttributes<HTMLElement> & ItemProps) {
   if (!visible) return null;
@@ -126,6 +127,9 @@ function Item({
       >
         {badges?.left && <Badge name={badges.left} align="left" />}
         {children}
+        {rightLabel && (
+          <Item.Text className="justify-self-end">{rightLabel}</Item.Text>
+        )}
         {type === 'list' && <List />}
         {type === 'slider' && <Slider />}
         {type === 'checkbox' && <Checkbox />}
