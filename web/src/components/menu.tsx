@@ -75,7 +75,11 @@ export default function Menu() {
   function ArrowDown() {
     let index = Math.min(items.length, selected + 1);
 
-    if (items[index]?.type === 'separator' || items[index]?.disabled)
+    if (
+      items[index]?.type === 'separator' ||
+      items[index]?.disabled ||
+      items[index]?.visible === false
+    )
       index += 1;
 
     if (index === items.length)
@@ -92,7 +96,7 @@ export default function Menu() {
   function ArrowRight() {
     const item = items[selected];
 
-    if (item.type === 'separator' || item.disabled || item.visible !== true)
+    if (item.type === 'separator' || item.disabled || item.visible === false)
       return;
 
     if (item.type === 'list') {
@@ -117,7 +121,7 @@ export default function Menu() {
   function ArrowLeft() {
     const item = items[selected];
 
-    if (item.type === 'separator' || item.disabled || item.visible !== true)
+    if (item.type === 'separator' || item.disabled || item.visible === false)
       return;
 
     if (item.type === 'list') {
@@ -142,7 +146,7 @@ export default function Menu() {
   function Enter() {
     const item = items[selected];
 
-    if (item.type === 'separator' || item.disabled || item.visible !== true)
+    if (item.type === 'separator' || item.disabled || item.visible === false)
       return;
 
     if (item.type === 'checkbox') {
@@ -176,9 +180,19 @@ export default function Menu() {
   useEffect(() => {
     if (!menu || !items || !items[selected]) return;
 
-    document.getElementById(`item-${items[selected].id}`)?.scrollIntoView({
+    const element = document.getElementById(`item-${items[selected].id}`);
+
+    if (!element || element.dataset?.selected === 'true') return;
+
+    element.scrollIntoView({
       block: 'center'
     });
+
+    const prev = document.querySelector('[data-selected="true"]');
+
+    prev?.removeAttribute('data-selected');
+
+    element.dataset.selected = 'true';
 
     fetchNui('OnSelect', {
       menu,
