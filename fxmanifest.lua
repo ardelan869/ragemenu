@@ -3,7 +3,7 @@ game 'gta5'
 lua54 'yes'
 
 author 'ardelan869'
-version 'fix(server): fixed version checker wrongly printing'
+version 'feat(nui): select last selected component, when going back'
 description 'FiveM native Rage Menu, made with React'
 
 ui_page 'web/dist/index.html'

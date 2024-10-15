@@ -17,6 +17,8 @@ interface MenuProps {
   banner?: string;
 }
 
+const lastSelected: Record<string, number> = {};
+
 export default function Menu() {
   const [menu, setMenu] = useState<MenuProps | undefined>();
   const [items, setItems] = useState<ItemProps[]>([]);
@@ -202,8 +204,18 @@ export default function Menu() {
   }, [selected, menu, items]);
 
   useEffect(() => {
-    setSelected(0);
+    if (!menu) return;
+
+    setSelected(lastSelected[menu.id] ?? 0);
+
+    delete lastSelected[menu.id];
   }, [menu]);
+
+  useEffect(() => {
+    if (!menu) return;
+
+    lastSelected[menu.id] = selected;
+  }, [selected, menu]);
 
   useEffect(() => {
     debugData([
