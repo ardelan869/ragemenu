@@ -3,7 +3,7 @@ game 'gta5'
 lua54 'yes'
 
 author 'ardelan869'
-version 'chore: added icons for submenus and disabled items'
+version 'fix: wrapped threads around callbacks so the components wont hang'
 description 'FiveM native Rage Menu, made with React'
 
 ui_page 'web/dist/index.html'

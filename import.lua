@@ -251,12 +251,20 @@ function Menu:Create(menuTitle, menuSubtitle, menuWidth, maxVisibleItems, banner
     end
 
     function component:trigger(event, ...)
+      local args = { ... };
+
       if not self.__events[event] then
         return;
       end
 
       for _, func in next, self.__events[event] do
-        func(...);
+        Citizen.CreateThreadNow(function(threadId)
+          func(table.unpack(args));
+
+          if threadId and IsThreadActive(threadId) then
+            TerminateThread(threadId);
+          end
+        end);
       end
     end
 
