@@ -3,7 +3,7 @@ game 'gta5'
 lua54 'yes'
 
 author 'ardelan869'
-version 'feat(nui): select last selected component, when going back'
+version 'fix(nui/menu): hid menu component when no items are avaible'
 description 'FiveM native Rage Menu, made with React'
 
 ui_page 'web/dist/index.html'

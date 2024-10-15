@@ -293,7 +293,9 @@ export default function Menu() {
   }, []);
 
   return (
-    menu && (
+    !!menu &&
+    !!items &&
+    !!items.length && (
       <main
         className="absolute w-[432px] top-5 left-5 tracking-[1px] text-[20px] font-chalet font-black"
         style={{ width: `${menu.width || 432}px` }}
@@ -314,7 +316,7 @@ export default function Menu() {
           className="overflow-y-scroll"
           style={{ maxHeight: `${(menu.maxVisibleItems || 10) * 38}px` }}
         >
-          {items.map((item, index) => (
+          {items?.map((item, index) => (
             <Item key={item.id} {...item} selected={index === selected}>
               <Item.Text
                 className={item.type === 'separator' ? undefined : 'mr-auto'}
