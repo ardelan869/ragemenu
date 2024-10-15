@@ -140,7 +140,9 @@ function Item({
         {type === 'list' && <List />}
         {type === 'slider' && <Slider />}
         {type === 'checkbox' && <Checkbox />}
-        {badges?.right && <Badge name={badges?.right} align="right" />}
+        {badges?.right && (!disabled || badges.right !== 'arrowright') && (
+          <Badge name={badges?.right} align="right" />
+        )}
         {disabled && <Badge name="shop_lock" align="right" />}
       </section>
     </ItemContext.Provider>
