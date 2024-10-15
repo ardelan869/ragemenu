@@ -61,7 +61,6 @@ local function resetNUI()
   SetNuiFocusKeepInput(false);
 
   SendNUIMessage({ action = 'SetMenu' });
-
   SendNUIMessage({ action = 'SetItems' });
 end
 
@@ -69,6 +68,13 @@ end
 function Menu:Open(menu)
   if self.current == menu.id then
     return;
+  end
+
+  -- get the menu again just in case, anything wasn't updated correctly
+  menu = self:GetById(menu.id) --[[@as Menu]];
+
+  if not menu then
+    return self:CloseAll();
   end
 
   for index, menuId in next, self.opened do
@@ -151,10 +157,12 @@ function Menu:Create(menuTitle, menuSubtitle, menuWidth, maxVisibleItems, banner
 
     self[key] = value;
 
-    SendNUIMessage({
-      action = 'UpdateMenu',
-      data = { [key] = value }
-    });
+    if Menu.current == self.id then
+      SendNUIMessage({
+        action = 'UpdateMenu',
+        data = { [key] = value }
+      });
+    end
   end
 
   function menu:SetTitle(title)
