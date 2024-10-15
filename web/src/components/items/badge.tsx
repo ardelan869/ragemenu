@@ -38,7 +38,12 @@ export type BadgeName =
   | 'shop_new_star'
   | 'shop_tattoos_icon'
   | 'shop_tick_icon'
-  | 'shop_trevor_icon';
+  | 'shop_trevor_icon'
+  | 'arrowright'
+  | 'arrowleft'
+  | 'shop_box_blank'
+  | 'shop_box_tick'
+  | 'shop_box_cross';
 
 export default function Badge({
   name,
@@ -49,21 +54,20 @@ export default function Badge({
   name: BadgeName;
   align?: 'left' | 'right';
 }) {
-  const { selected, disabled = false } = useItem();
+  const { selected } = useItem();
 
   if (!name) return null;
 
   return (
     <img
       className={cn(
-        'w-7 h-7 object-contain',
+        'w-5 h-5 object-contain',
         align === 'left' ? 'mr-1' : 'ml-1',
         selected && 'invert',
-        disabled && 'opacity-50',
         className
       )}
       {...props}
-      src={`assets/images/badges/${name}.png`}
+      src={`assets/images/${name}.png`}
     />
   );
 }

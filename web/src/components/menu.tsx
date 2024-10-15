@@ -225,13 +225,20 @@ export default function Menu() {
             id: 'test',
             label: 'Test',
             type: 'checkbox',
-            checked: true
+            checked: true,
+            badges: {
+              left: 'card_suit_hearts'
+            }
           },
           {
             id: 'test2',
             label: 'Test2',
             type: 'button',
-            rightLabel: 'Test'
+            rightLabel: 'Test',
+            badges: {
+              right: 'card_suit_hearts'
+            },
+            disabled: true
           },
           {
             id: 'test3',
@@ -253,6 +260,14 @@ export default function Menu() {
             id: 'test5',
             label: 'Test5',
             type: 'separator'
+          },
+          {
+            id: 'test5',
+            label: 'Imaginary Submenu',
+            type: 'button',
+            badges: {
+              right: 'arrowright'
+            }
           },
           {
             id: 'test6',

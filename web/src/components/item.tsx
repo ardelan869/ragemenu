@@ -91,6 +91,7 @@ function Item({
   rightLabel,
   ...props
 }: React.HTMLAttributes<HTMLElement> & ItemProps) {
+  // FIXME: Maybe make this a bit more readable
   if (!visible) return null;
 
   return (
@@ -103,12 +104,17 @@ function Item({
           label,
           description,
           badges,
+          disabled,
+          visible,
           checked,
           values,
           current,
           iconStyle,
           max,
-          min
+          min,
+          className,
+          children,
+          rightLabel
         } as ItemProps
       }
     >
@@ -127,13 +133,15 @@ function Item({
       >
         {badges?.left && <Badge name={badges.left} align="left" />}
         {children}
+        {/* Had to do it here, otherwise i would have gotten an error about an invalid prop */}
         {rightLabel && (
           <Item.Text className="justify-self-end">{rightLabel}</Item.Text>
         )}
         {type === 'list' && <List />}
         {type === 'slider' && <Slider />}
         {type === 'checkbox' && <Checkbox />}
-        {badges?.right && <Badge name={badges.right} align="right" />}
+        {badges?.right && <Badge name={badges?.right} align="right" />}
+        {disabled && <Badge name="shop_lock" align="right" />}
       </section>
     </ItemContext.Provider>
   );

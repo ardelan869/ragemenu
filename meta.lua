@@ -46,6 +46,11 @@
 --- | 'shop_tattoos_icon'
 --- | 'shop_tick_icon'
 --- | 'shop_trevor_icon'
+--- | 'arrowright'
+--- | 'arrowleft'
+--- | 'shop_box_blank'
+--- | 'shop_box_tick'
+--- | 'shop_box_cross'
 
 ---@alias MenuType 'button' | 'checkbox' | 'separator' | 'list' | 'slider'
 
