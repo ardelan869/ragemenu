@@ -271,7 +271,7 @@ export default function Menu() {
             </Item>
           ))}
         </section>
-        {items[selected]?.description?.trim().length && (
+        {items[selected]?.description?.trim?.().length && (
           <Description>{items[selected].description}</Description>
         )}
       </main>
