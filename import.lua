@@ -385,9 +385,15 @@ function Menu:Create(menuTitle, menuSubtitle, menuWidth, maxVisibleItems, banner
   end
 
   function menu:AddSubmenu(submenu, label, rightLabel, description, badges, disabled)
-    local button = self:AddButton(label, rightLabel, description, badges or {
-      right = 'arrowright'
-    }, disabled);
+    if not badges or not badges.right then
+      badges = {
+        left = nil,
+        right = 'arrowright'
+      };
+    end
+
+    local button = self:AddButton(label, rightLabel, description, badges --[[@as { left?: BadgeName; right: BadgeName }]],
+      disabled);
 
     button:OnClick(function()
       local subMenu = Menu:GetById(type(submenu) == 'string' and submenu or submenu.id);
