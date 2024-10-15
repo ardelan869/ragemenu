@@ -401,7 +401,8 @@ function Menu:Create(menuTitle, menuSubtitle, menuWidth, maxVisibleItems, banner
   end
 
   function menu:AddList(label, description, badges, values, current, disabled)
-    return self:addComponent('list', label, nil, description, badges, disabled, values, nil, current);
+    return self:addComponent('list', label, nil, description, badges, disabled, values, nil,
+      current and math.min(current - 1, 0) or 0);
   end
 
   function menu:AddSlider(label, description, badges, max, min, step, current, disabled)
@@ -475,7 +476,7 @@ exports('Emit', function(callback, req)
     component.current = req.current;
 
     if component.type == 'list' then
-      component:trigger('change', component, req.current, component.values[req.current]);
+      component:trigger('change', component, req.current + 1, component.values[req.current + 1]);
     elseif component.type == 'slider' then
       component:trigger('change', component, req.current);
     end
