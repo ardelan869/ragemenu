@@ -3,7 +3,7 @@ game 'gta5'
 lua54 'yes'
 
 author 'ardelan869'
-version 'fix(nui/menu): hid menu component when no items are avaible'
+version 'chore: bump up version'
 description 'FiveM native Rage Menu, made with React'
 
 ui_page 'web/dist/index.html'
