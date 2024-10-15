@@ -1,6 +1,14 @@
 RESOURCE_NAME = 'ragemenu';
 LAST_RESOURCE = nil;
 
+local AUDIOS = {
+  OnSelect = 'SELECT',
+  OnChange = 'NAV_LEFT_RIGHT',
+  OnCheck = 'WAYPOINT_SET',
+  OnClick = 'SELECT',
+  Exit = 'TIMER'
+};
+
 exports('SendNUIMessage', function(message)
   local resource = GetInvokingResource();
 
@@ -15,6 +23,7 @@ end);
 
 exports('SetNuiFocus', SetNuiFocus);
 exports('SetNuiFocusKeepInput', SetNuiFocusKeepInput);
+
 
 for _, callback in next, {
   'OnSelect',
@@ -39,6 +48,8 @@ for _, callback in next, {
     end
 
     import:Emit(callback, req);
+
+    PlaySoundFrontend(-1, AUDIOS[callback], 'HUD_FRONTEND_DEFAULT_SOUNDSET', true)
 
     resp('OK');
   end);
