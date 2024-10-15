@@ -221,13 +221,15 @@ function Menu:Create(menuTitle, menuSubtitle, menuWidth, maxVisibleItems, banner
 
       self[key] = value;
 
-      SendNUIMessage({
-        action = 'UpdateItem',
-        data = {
-          id = self.id,
-          [key] = value
-        }
-      });
+      if Menu.current == menu.id then
+        SendNUIMessage({
+          action = 'UpdateItem',
+          data = {
+            id = self.id,
+            [key] = value
+          }
+        });
+      end
     end
 
     function component:SetLabel(label)
