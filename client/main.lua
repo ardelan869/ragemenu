@@ -2,11 +2,26 @@ RESOURCE_NAME = 'ragemenu';
 LAST_RESOURCE = nil;
 
 local AUDIOS = {
-  OnSelect = 'SELECT',
-  OnChange = 'NAV_LEFT_RIGHT',
-  OnCheck = 'WAYPOINT_SET',
-  OnClick = 'SELECT',
-  Exit = 'TIMER'
+  OnSelect = {
+    name = 'NAV_UP_DOWN',
+    ref = 'HUD_FREEMODE_SOUNDSET'
+  },
+  OnChange = {
+    name = 'NAV_LEFT_RIGHT',
+    ref = 'HUD_FRONTEND_DEFAULT_SOUNDSET'
+  },
+  OnCheck = {
+    name = 'NAV_LEFT_RIGHT',
+    ref = 'HUD_FRONTEND_DEFAULT_SOUNDSET'
+  },
+  OnClick = {
+    name = 'SELECT',
+    ref = 'HUD_FRONTEND_DEFAULT_SOUNDSET',
+  },
+  Exit = {
+    name = 'BACK',
+    ref = 'HUD_FRONTEND_DEFAULT_SOUNDSET'
+  }
 };
 
 exports('SendNUIMessage', function(message)
@@ -48,7 +63,9 @@ for _, callback in next, {
 
     import:Emit(callback, req);
 
-    PlaySoundFrontend(-1, AUDIOS[callback], 'HUD_FRONTEND_DEFAULT_SOUNDSET', true)
+    local audio = AUDIOS[callback];
+
+    PlaySoundFrontend(-1, audio.name, audio.ref, true)
 
     resp('OK');
   end);
