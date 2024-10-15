@@ -2,10 +2,10 @@ import Item, { type ItemProps } from '@/components/item';
 import SubTitle from '@/components/sub-title';
 import Description from '@/components/description';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useKeyDown } from '@/lib/keys';
 import { useNuiEvent } from '@/lib/hooks';
-import { cn, debugData, fetchNui, findLastIndex } from '@/lib';
+import { cn, debugData, fetchNui } from '@/lib';
 
 interface MenuProps {
   id: string;
@@ -58,39 +58,39 @@ export default function Menu() {
     setItems([...items]);
   });
 
+  const findNextValidIndex = useCallback(
+    (direction: 'up' | 'down') => {
+      const step = direction === 'up' ? -1 : 1;
+      let index = selected;
+
+      do {
+        index += step;
+        if (index < 0) index = items.length - 1;
+        if (index >= items.length) index = 0;
+
+        if (
+          items[index].type !== 'separator' &&
+          !items[index].disabled &&
+          items[index].visible !== false
+        ) {
+          return index;
+        }
+      } while (index !== selected);
+
+      return -1;
+    },
+    [items, selected]
+  );
+
   function ArrowUp() {
-    let index = Math.max(-1, selected - 1);
-
-    if (items[index]?.type === 'separator' || items[index]?.disabled) index--;
-
-    if (index < 0)
-      index = findLastIndex(
-        items,
-        (c) => !c.disabled && c.visible !== false && c.type !== 'separator'
-      );
-
-    setSelected(index);
+    const newIndex = findNextValidIndex('up');
+    setSelected(newIndex);
   }
   useKeyDown('ArrowUp', ArrowUp);
 
   function ArrowDown() {
-    let index = Math.min(items.length, selected + 1);
-
-    if (
-      items[index]?.type === 'separator' ||
-      items[index]?.disabled ||
-      items[index]?.visible === false
-    )
-      index += 1;
-
-    if (index === items.length)
-      index = items.findIndex(
-        (c) => !c.disabled && c.visible !== false && c.type !== 'separator'
-      );
-
-    if (index < 0) return;
-
-    setSelected(index);
+    const newIndex = findNextValidIndex('down');
+    setSelected(newIndex);
   }
   useKeyDown('ArrowDown', ArrowDown);
 
@@ -200,6 +200,10 @@ export default function Menu() {
       selected: items[selected].id
     });
   }, [selected, menu, items]);
+
+  useEffect(() => {
+    setSelected(0);
+  }, [menu]);
 
   useEffect(() => {
     debugData([

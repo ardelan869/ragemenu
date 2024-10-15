@@ -62,10 +62,7 @@ local function resetNUI()
 
   SendNUIMessage({ action = 'SetMenu' });
 
-  SendNUIMessage({
-    action = 'SetItems',
-    data = {}
-  });
+  SendNUIMessage({ action = 'SetItems' });
 end
 
 ---@param menu Menu
@@ -74,16 +71,13 @@ function Menu:Open(menu)
     return;
   end
 
-  if self.current ~= nil then
-    local oldMenu = self:GetById(self.current);
-
-    if oldMenu then
-      oldMenu:Close();
-
-      self.opened[#self.opened + 1] = self.current;
+  for index, menuId in next, self.opened do
+    if menuId == menu.id then
+      table.remove(self.opened, index);
     end
   end
 
+  self.opened[#self.opened + 1] = menu.id;
   self.current = menu.id;
 
   SetNuiFocus(true, false);
@@ -101,17 +95,21 @@ function Menu:Open(menu)
 end
 
 function Menu:Close()
-  if not self.current then
-    return;
+  if #self.opened == 0 then
+    return self:CloseAll();
   end
 
-  if #self.opened == 0 then
-    self.current = nil;
-
-    return resetNUI();
+  for index, menuId in next, self.opened do
+    if menuId == self.current then
+      table.remove(self.opened, index);
+    end
   end
 
   local lastOpened = self:GetById(self.opened[#self.opened]);
+
+  if not lastOpened then
+    return self:CloseAll();
+  end
 
   if lastOpened then
     self:Open(lastOpened);
@@ -337,9 +335,11 @@ function Menu:Create(menuTitle, menuSubtitle, menuWidth, maxVisibleItems, banner
         id = self.id,
         type = self.type,
         label = self.label,
+        rightLabel = self.rightLabel,
         description = self.description,
         badges = self.badges,
         disabled = self.disabled,
+        visible = self.visible,
         values = self.values,
         checked = self.checked,
         current = self.current,
@@ -367,9 +367,7 @@ function Menu:Create(menuTitle, menuSubtitle, menuWidth, maxVisibleItems, banner
   end
 
   function menu:AddSubmenu(submenu, label, rightLabel, description, badges, disabled)
-    local button = self:AddButton(label, rightLabel, description, badges or {
-      right = 'arrow_right'
-    }, disabled);
+    local button = self:AddButton(label, rightLabel, description, badges, disabled);
 
     button:OnClick(function()
       local subMenu = Menu:GetById(type(submenu) == 'string' and submenu or submenu.id);

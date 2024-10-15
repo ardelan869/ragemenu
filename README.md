@@ -34,26 +34,53 @@ FiveM native Rage Menu, built with React. [Documentation](https://docs.ardelanya
 ```lua
 --- you can create a menu once and reopen it at any time
 --- state will be cached and reused
-local menu = Menu:Create('Example', 'Example Subtitle')
-
-local exampleButton = menu:AddButton('Example Button', 'Example Description', {
-  left = 'shop_ammo_icon'
-})
-
-exampleButton:OnClick(function(component)
-  print(component.label .. ' Clicked!')
+local menu = Menu:Create('Example', 'Example Subtitle', nil, nil, '')
+-- 520 is a custom width, the default is
+local submenu = Menu:Create('Submenu', 'Submenu Subtitle', 520)
+submenu:AddButton('Submenu Button'):OnClick(function()
+  print('Submenu Button Clicked')
 end)
 
-local exampleSlider = menu:AddSlider('Example Slider', 'Example Description', nil, 100, 0, 10, 50)
-
-local removeSliderHandler = exampleSlider:OnChange(function(current)
-  print('current slider progress', current)
+menu:AddButton('Button', 'Button Right Label', 'Button Description'):OnClick(function()
+  print('Button Clicked')
 end)
 
-exampleSlider:OnClick(function()
-  removeSliderHandler() -- this function removes the OnChange handler, that's above
+menu:AddSubmenu(submenu, 'Submenu Label', 'Right Label', 'Submenu Description')
 
-  print('Removed slider `OnChange` handler')
+menu:AddSeparator('Separator')
+
+local checkbox = menu:AddCheckbox('Checkbox', 'Checkbox Description', {
+  right = 'card_suit_hearts'
+}, true)
+
+checkbox:OnCheck(function(checked)
+  print('Checkbox Checked', checked)
+end)
+
+menu:AddButton('Disable Checkbox'):OnClick(function()
+  checkbox:Disable(not checkbox.disabled)
+  print('Checkbox Disabled', checkbox.disabled)
+end)
+
+menu:AddButton('Toggle Checkbox Visibility'):OnClick(function()
+  checkbox:ToggleVisiblity(not checkbox.visible)
+  print('Checkbox Visibility', checkbox.visible)
+end)
+
+menu:AddList('List', 'List Description', {
+  right = 'card_suit_hearts'
+}, {
+  'List Item 1',
+  'List Item 2',
+  'List Item 3'
+}, 1):OnChange(function(current, currentValue)
+  print('List Changed', current, currentValue)
+end)
+
+menu:AddSlider('Slider', 'Slider Description', {
+  right = 'card_suit_hearts'
+}, 100, 0, 10, 50):OnChange(function(current)
+  print('Slider Changed', current)
 end)
 
 RegisterCommand('example', function()

@@ -34,15 +34,3 @@ export function debugData<P>(events: DebugEvent<P>[], timer = 1000) {
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
-
-export function findLastIndex<T>(
-  array: T[],
-  predicate: (value: T, index: number, array: T[]) => boolean
-): number {
-  for (let i = array.length - 1; i >= 0; i--) {
-    if (predicate(array[i], i, array)) {
-      return i;
-    }
-  }
-  return -1;
-}

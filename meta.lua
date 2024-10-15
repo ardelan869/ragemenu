@@ -53,9 +53,11 @@
 ---@field id string
 ---@field type MenuType
 ---@field label string
+---@field rightLabel? string
 ---@field description? string
 ---@field badges? { left?: BadgeName; right?: BadgeName }
 ---@field disabled? boolean
+---@field visible boolean
 ---@field values? string[]
 ---@field checked? boolean
 ---@field current? number

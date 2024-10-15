@@ -24,7 +24,6 @@ end);
 exports('SetNuiFocus', SetNuiFocus);
 exports('SetNuiFocusKeepInput', SetNuiFocusKeepInput);
 
-
 for _, callback in next, {
   'OnSelect',
   'OnChange',
@@ -57,6 +56,7 @@ end
 
 AddEventHandler('onResourceStop', function(resource)
   if LAST_RESOURCE == resource then
+    SendNUIMessage({ action = 'SetMenu' });
     SendNUIMessage({ action = 'SetItems' });
   end
 end);
