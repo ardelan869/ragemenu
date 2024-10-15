@@ -18,9 +18,7 @@ PerformHttpRequest(BASE_URL, function(status, body)
     return print('^3This is a prelease, expect errors to occur.^0');
   end
 
-  local LATEST_VERSION = release.tag_name;
-
-  if LATEST_VERSION ~= CURRENT_VERSION then
+  if release.name ~= CURRENT_VERSION then
     return print(UPDATE_RESOURCE:format(RESOURCE_NAME, release.html_url));
   end
 end);
