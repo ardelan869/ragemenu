@@ -124,6 +124,7 @@
 ---@field subtitle? string
 ---@field width? number
 ---@field maxVisibleItems? number
+---@field banner? string
 
 ---@class Menu:MenuData
 ---@field __components MenuComponent[]
@@ -149,7 +150,7 @@
 ---@field __cached Menu[]
 ---@field current? string
 ---@field opened string[]
----@field Create fun(self: self, title: string, subtitle?: string, width?: number, maxVisibleItems?: number): Menu
+---@field Create fun(self: self, title: string, subtitle?: string, width?: number, maxVisibleItems?: number, banner?: string): Menu
 ---@field GetById fun(self: self, id: string): Menu?
 ---@field GetOpened fun(self: self): Menu?
 ---@field Open fun(self: self, menu: Menu)

@@ -5,7 +5,7 @@ import Description from '@/components/description';
 import { useEffect, useState } from 'react';
 import { useKeyDown } from '@/lib/keys';
 import { useNuiEvent } from '@/lib/hooks';
-import { debugData, fetchNui, findLastIndex } from '@/lib';
+import { cn, debugData, fetchNui, findLastIndex } from '@/lib';
 
 interface MenuProps {
   id: string;
@@ -14,6 +14,7 @@ interface MenuProps {
   subtitle?: string;
   width?: number;
   maxVisibleItems?: number;
+  banner?: string;
 }
 
 export default function Menu() {
@@ -209,7 +210,8 @@ export default function Menu() {
           resource: 'ragemenu',
           title: 'Test',
           width: 432,
-          maxVisibleItems: 10
+          maxVisibleItems: 10,
+          banner: 'https://i.imgur.com/Ua8m2Wq.gif'
         }
       },
       {
@@ -265,7 +267,13 @@ export default function Menu() {
         className="absolute w-[432px] top-5 left-5 tracking-[1px] text-[20px] font-chalet font-black"
         style={{ width: `${menu.width || 432}px` }}
       >
-        <header className="w-full h-[128px] bg-header-gradient grid place-items-center">
+        <header
+          className={cn(
+            'w-full h-[128px] bg-header-gradient grid place-items-center',
+            !!menu.banner && 'bg-cover bg-center bg-no-repeat'
+          )}
+          style={menu.banner ? { backgroundImage: `url(${menu.banner})` } : {}}
+        >
           <h1 className="font-signpainter text-7xl text-white translate-y-2 font-extralight">
             {menu.title}
           </h1>
