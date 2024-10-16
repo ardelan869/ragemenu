@@ -3,7 +3,7 @@ game 'gta5'
 lua54 'yes'
 
 author 'ardelan869'
-version 'fix(client/submenu): fixed left badge not remaining'
+version 'feat: added configurable positions'
 description 'FiveM native Rage Menu, made with React'
 
 ui_page 'web/dist/index.html'

@@ -54,6 +54,17 @@
 
 ---@alias MenuType 'button' | 'checkbox' | 'separator' | 'list' | 'slider'
 
+---@alias MenuPosition
+---| 'top-left'
+---| 'top-center'
+---| 'top-right'
+---| 'center-left'
+---| 'center'
+---| 'center-right'
+---| 'bottom-left'
+---| 'bottom-center'
+---| 'bottom-right'
+
 ---@class MenuComponentData
 ---@field id string
 ---@field type MenuType
@@ -129,6 +140,7 @@
 ---@field resource string
 ---@field title string
 ---@field subtitle? string
+---@field position MenuPosition
 ---@field width? number
 ---@field maxVisibleItems? number
 ---@field banner? string
@@ -157,7 +169,7 @@
 ---@field __cached Menu[]
 ---@field current? string
 ---@field opened string[]
----@field Create fun(self: self, title: string, subtitle?: string, width?: number, maxVisibleItems?: number, banner?: string): Menu
+---@field Create fun(self: self, title: string, subtitle?: string, postion?: MenuPosition, width?: number, maxVisibleItems?: number, banner?: string): Menu
 ---@field GetById fun(self: self, id: string): Menu?
 ---@field GetOpened fun(self: self): Menu?
 ---@field Open fun(self: self, menu: Menu)

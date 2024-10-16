@@ -64,3 +64,39 @@ button:hover {
 ::-webkit-outer-spin-button {
   display: none;
 }
+
+.top-left {
+  @apply top-0 left-0;
+}
+
+.top-center {
+  @apply top-0 left-1/2 translate-x-[-50%];
+}
+
+.top-right {
+  @apply top-0 right-0;
+}
+
+.center-left {
+  @apply top-[50%] translate-y-[-50%] left-0;
+}
+
+.center {
+  @apply top-[50%] translate-y-[-50%] left-1/2 translate-x-[-50%];
+}
+
+.center-right {
+  @apply top-[50%] translate-y-[-50%] right-0;
+}
+
+.bottom-left {
+  @apply bottom-0 left-0;
+}
+
+.bottom-center {
+  @apply bottom-0 left-1/2 translate-x-[-50%];
+}
+
+.bottom-right {
+  @apply bottom-0 right-0;
+}

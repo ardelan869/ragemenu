@@ -5,13 +5,26 @@ import Description from '@/components/description';
 import { useCallback, useEffect, useState } from 'react';
 import { useKeyDown } from '@/lib/keys';
 import { useNuiEvent } from '@/lib/hooks';
+
 import { cn, debugData, fetchNui } from '@/lib';
+
+type MenuPosition =
+  | 'top-left'
+  | 'top-center'
+  | 'top-right'
+  | 'center-left'
+  | 'center'
+  | 'center-right'
+  | 'bottom-left'
+  | 'bottom-center'
+  | 'bottom-right';
 
 interface MenuProps {
   id: string;
   resource: string;
   title: string;
   subtitle?: string;
+  position?: MenuPosition;
   width?: number;
   maxVisibleItems?: number;
   banner?: string;
@@ -239,6 +252,7 @@ export default function Menu() {
           id: 'test',
           resource: 'ragemenu',
           title: 'Test',
+          subtitle: 'Test',
           width: 432,
           maxVisibleItems: 10,
           banner: 'https://i.imgur.com/Ua8m2Wq.gif'
@@ -311,7 +325,10 @@ export default function Menu() {
     !!items &&
     !!items.length && (
       <main
-        className="absolute w-[432px] top-5 left-5 tracking-[1px] text-[20px] font-chalet font-black"
+        className={cn(
+          'absolute w-[432px] top-5 left-5 tracking-[1px] text-[20px] font-chalet font-black m-6',
+          menu.position ?? 'top-left'
+        )}
         style={{ width: `${menu.width || 432}px` }}
       >
         <header

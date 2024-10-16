@@ -133,13 +133,14 @@ function Menu:CloseAll()
   resetNUI();
 end
 
-function Menu:Create(menuTitle, menuSubtitle, menuWidth, maxVisibleItems, banner)
+function Menu:Create(menuTitle, menuSubtitle, menuPosition, menuWidth, maxVisibleItems, banner)
   ---@class Menu
   local menu = {
     id = generateUUID(),
     resource = GetCurrentResourceName(),
     title = menuTitle,
     subtitle = menuSubtitle,
+    position = menuPosition or 'top-left',
     width = menuWidth,
     maxVisibleItems = maxVisibleItems,
     banner = banner,
@@ -446,6 +447,7 @@ function Menu:Create(menuTitle, menuSubtitle, menuWidth, maxVisibleItems, banner
       resource = self.resource,
       title = self.title,
       subtitle = self.subtitle,
+      position = self.position,
       width = self.width,
       maxVisibleItems = self.maxVisibleItems,
       banner = self.banner

@@ -36,7 +36,7 @@ FiveM native Rage Menu, built with React. [Documentation](https://docs.ardelanya
 --- state will be cached and reused
 local menu = Menu:Create('Example', 'Example Subtitle', nil, nil, '')
 -- 520 is a custom width, the default is
-local submenu = Menu:Create('Submenu', 'Submenu Subtitle', 520)
+local submenu = Menu:Create('Submenu', 'Submenu Subtitle', 'top-right', 520)
 submenu:AddButton('Submenu Button'):OnClick(function()
   print('Submenu Button Clicked')
 end)
