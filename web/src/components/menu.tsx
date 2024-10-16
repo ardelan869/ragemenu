@@ -18,6 +18,7 @@ interface MenuProps {
 }
 
 const lastSelected: Record<string, number> = {};
+let lastMenu: string;
 
 export default function Menu() {
   const [menu, setMenu] = useState<MenuProps | undefined>();
@@ -35,7 +36,11 @@ export default function Menu() {
     });
   });
 
-  useNuiEvent<MenuProps | undefined>('SetMenu', setMenu);
+  useNuiEvent<MenuProps | undefined>('SetMenu', (_menu) => {
+    if (menu) lastMenu = menu.id;
+
+    setMenu(_menu);
+  });
 
   useNuiEvent<ItemProps[]>('SetItems', setItems);
 
@@ -204,12 +209,21 @@ export default function Menu() {
   }, [selected, menu, items]);
 
   useEffect(() => {
-    if (!menu) return;
+    if (!menu || menu.id === lastMenu) return;
 
-    setSelected(lastSelected[menu.id] ?? 0);
+    setSelected(
+      lastSelected[menu.id] ??
+        items.findIndex(
+          (i) =>
+            i.type !== 'separator' &&
+            i.disabled !== false &&
+            i.visible !== false
+        ) ??
+        0
+    );
 
     delete lastSelected[menu.id];
-  }, [menu]);
+  }, [menu, items]);
 
   useEffect(() => {
     if (!menu) return;
