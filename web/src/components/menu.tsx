@@ -226,7 +226,7 @@ export default function Menu() {
 
     setSelected(
       lastSelected[menu.id] ??
-        items.findIndex(
+        items?.findIndex(
           (i) =>
             i.type !== 'separator' &&
             i.disabled !== false &&
