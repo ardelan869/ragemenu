@@ -387,7 +387,7 @@ function Menu:Create(menuTitle, menuSubtitle, menuWidth, maxVisibleItems, banner
   function menu:AddSubmenu(submenu, label, rightLabel, description, badges, disabled)
     if not badges or not badges.right then
       badges = {
-        left = nil,
+        left = badges and badges.left or nil,
         right = 'arrowright'
       };
     end
