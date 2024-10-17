@@ -17,19 +17,25 @@ export default function List({
   return (
     <div
       className={cn(
-        'ml-auto flex items-center gap-1',
+        'ml-auto flex items-center gap-[0.3704vmin]',
         disabled && 'opacity-50',
         className
       )}
       {...props}
     >
       <img
-        className={cn('w-2 h-2 object-contain', selected && 'invert')}
+        className={cn(
+          'h-[0.7407vmin] w-[0.7407vmin] object-contain',
+          selected && 'invert'
+        )}
         src="assets/images/arrowleft.png"
       />
-      <h3>{values[current]}</h3>
+      <h3 className="max-w-[13.8889vmin] truncate">{values[current]}</h3>
       <img
-        className={cn('w-2 h-2 object-contain', selected && 'invert')}
+        className={cn(
+          'h-[0.7407vmin] w-[0.7407vmin] object-contain',
+          selected && 'invert'
+        )}
         src="assets/images/arrowright.png"
       />
     </div>

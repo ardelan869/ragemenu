@@ -121,7 +121,7 @@ function Item({
       <section
         id={`item-${id}`}
         className={cn(
-          'h-[38px] px-[10px] py-1 flex items-center',
+          'flex h-[3.5185vmin] items-center px-[0.9259vmin] py-[0.3704vmin]',
           selected
             ? 'bg-selected-item-gradient text-black'
             : 'bg-[#0A0A0A]/50 text-white',
@@ -135,7 +135,9 @@ function Item({
         {children}
         {/* Had to do it here, otherwise i would have gotten an error about an invalid prop */}
         {rightLabel && (
-          <Item.Text className="justify-self-end">{rightLabel}</Item.Text>
+          <Item.Text className="max-w-[11.1111vmin] justify-self-end">
+            {rightLabel}
+          </Item.Text>
         )}
         {type === 'list' && <List />}
         {type === 'slider' && <Slider />}
@@ -149,8 +151,13 @@ function Item({
   );
 }
 
-function Text({ ...props }: React.HTMLAttributes<HTMLHeadingElement>) {
-  return <h3 {...props} />;
+function Text({
+  className,
+  ...props
+}: React.HTMLAttributes<HTMLHeadingElement>) {
+  return (
+    <h3 className={cn('max-w-[16.6667vmin] truncate', className)} {...props} />
+  );
 }
 
 Item.Text = Text;

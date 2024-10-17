@@ -20,7 +20,7 @@ export default function Checkbox({
   return (
     <img
       className={cn(
-        'w-5 h-5 ml-auto',
+        'ml-auto h-[1.8519vmin] w-[1.8519vmin]',
         selected && 'invert',
         disabled && 'opacity-50',
         className

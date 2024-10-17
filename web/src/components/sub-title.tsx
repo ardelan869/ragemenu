@@ -6,7 +6,10 @@ export default function SubTitle({
 }: React.HTMLAttributes<HTMLHeadingElement>) {
   return (
     <h3
-      className={cn('bg-black text-white text-left px-[10px] py-1', className)}
+      className={cn(
+        'bg-black px-[0.9259vmin] py-[0.3704vmin] text-left text-white',
+        className
+      )}
       {...props}
     />
   );

@@ -2,11 +2,11 @@ import Item, { type ItemProps } from '@/components/item';
 import SubTitle from '@/components/sub-title';
 import Description from '@/components/description';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useKeyDown } from '@/lib/keys';
 import { useNuiEvent } from '@/lib/hooks';
 
-import { cn, debugData, fetchNui } from '@/lib';
+import { cn, debugData, fetchNui, vmin } from '@/lib';
 
 type MenuPosition =
   | 'top-left'
@@ -30,10 +30,9 @@ interface MenuProps {
   banner?: string;
 }
 
-const lastSelected: Record<string, number> = {};
-let lastMenu: string;
-
 export default function Menu() {
+  const lastMenu = useRef<string | undefined>(undefined);
+  const lastSelected = useRef<Record<string, number>>({});
   const [menu, setMenu] = useState<MenuProps | undefined>();
   const [items, setItems] = useState<ItemProps[]>([]);
   const [selected, setSelected] = useState(0);
@@ -50,7 +49,7 @@ export default function Menu() {
   });
 
   useNuiEvent<MenuProps | undefined>('SetMenu', (_menu) => {
-    if (menu) lastMenu = menu.id;
+    if (menu) lastMenu.current = menu.id;
 
     setMenu(_menu);
   });
@@ -206,7 +205,7 @@ export default function Menu() {
     if (!element || element.dataset?.selected === 'true') return;
 
     element.scrollIntoView({
-      block: 'center'
+      block: 'end'
     });
 
     const prev = document.querySelector('[data-selected="true"]');
@@ -222,10 +221,12 @@ export default function Menu() {
   }, [selected, menu, items]);
 
   useEffect(() => {
-    if (!menu || menu.id === lastMenu) return;
+    if (!menu || menu.id === lastMenu.current) return;
+
+    lastMenu.current = menu.id;
 
     setSelected(
-      lastSelected[menu.id] ??
+      lastSelected.current[menu.id] ??
         items?.findIndex(
           (i) =>
             i.type !== 'separator' &&
@@ -235,13 +236,13 @@ export default function Menu() {
         0
     );
 
-    delete lastSelected[menu.id];
+    delete lastSelected.current[menu.id];
   }, [menu, items]);
 
   useEffect(() => {
     if (!menu) return;
 
-    lastSelected[menu.id] = selected;
+    lastSelected.current[menu.id] = selected;
   }, [selected, menu]);
 
   useEffect(() => {
@@ -291,27 +292,31 @@ export default function Menu() {
           },
           {
             id: 'test4',
-            label: 'Test4',
+            label: 'Long Text Long Text Long Text Long Text',
             type: 'list',
-            values: ['Test', 'Test2', 'Test3'],
+            values: [
+              'Long Text Long Text Long Text Long Text Long Text Long Text',
+              'Test2',
+              'Test3'
+            ],
             current: 0
           },
           {
             id: 'test5',
-            label: 'Test5',
+            label: 'Long Text Long Text Long Text Long Text Long Text',
             type: 'separator'
           },
           {
-            id: 'test5',
-            label: 'Imaginary Submenu',
+            id: 'test6',
+            label: 'Imaginary Submenu IIII',
             type: 'button',
             badges: {
               right: 'arrowright'
             }
           },
           {
-            id: 'test6',
-            label: 'Test6',
+            id: 'test7',
+            label: 'Test7',
             type: 'button',
             rightLabel: 'Test'
           }
@@ -326,31 +331,33 @@ export default function Menu() {
     !!items.length && (
       <main
         className={cn(
-          'absolute w-[432px] top-5 left-5 tracking-[1px] text-[20px] font-chalet font-black m-6',
+          'absolute m-[2.2222vmin] w-[40vmin] font-chalet text-[1.8519vmin] font-black tracking-[0.0926vmin]',
           menu.position ?? 'top-left'
         )}
-        style={{ width: `${menu.width || 432}px` }}
+        style={{ width: vmin(menu.width || 432) }}
       >
         <header
           className={cn(
-            'w-full h-[128px] bg-header-gradient grid place-items-center',
+            'grid h-[11.8519vmin] w-full place-items-center bg-header-gradient',
             !!menu.banner && 'bg-cover bg-center bg-no-repeat'
           )}
           style={menu.banner ? { backgroundImage: `url(${menu.banner})` } : {}}
         >
-          <h1 className="font-signpainter text-7xl text-white translate-y-2 font-extralight">
+          <h1 className="translate-y-[0.7407vmin] font-signpainter text-[6.6667vmin] font-extralight text-white">
             {menu.title}
           </h1>
         </header>
         {menu.subtitle && <SubTitle>{menu.subtitle}</SubTitle>}
         <section
           className="overflow-y-scroll"
-          style={{ maxHeight: `${(menu.maxVisibleItems || 10) * 38}px` }}
+          style={{ maxHeight: vmin((menu.maxVisibleItems || 10) * 38) }}
         >
           {items?.map((item, index) => (
             <Item key={item.id} {...item} selected={index === selected}>
               <Item.Text
-                className={item.type === 'separator' ? undefined : 'mr-auto'}
+                className={
+                  item.type === 'separator' ? 'max-w-[95%]' : 'mr-auto'
+                }
               >
                 {item.label}
               </Item.Text>

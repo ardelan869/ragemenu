@@ -7,7 +7,7 @@ export default function Description({
   return (
     <article
       className={cn(
-        'border-t-[3px] border-black mt-[5px] bg-description-gradient px-[12px] py-[10px] text-white',
+        'mt-[0.463vmin] border-t-[0.2778vmin] border-black bg-description-gradient px-[1.1111vmin] py-[0.9259vmin] text-white',
         className
       )}
       {...props}

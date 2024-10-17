@@ -16,24 +16,30 @@ export default function Slider({
   return (
     <div
       className={cn(
-        'ml-auto flex items-center gap-1',
+        'ml-auto flex items-center gap-[0.3704vmin]',
         disabled && 'opacity-50',
         className
       )}
       {...props}
     >
       <img
-        className={cn('w-2 h-2 object-contain', selected && 'invert')}
+        className={cn(
+          'h-[0.7407vmin] w-[0.7407vmin] object-contain',
+          selected && 'invert'
+        )}
         src="assets/images/arrowleft.png"
       />
-      <div className="bg-[#042039] w-[150px] h-[9px] overflow-hidden">
+      <div className="h-[0.8333vmin] w-[13.8889vmin] overflow-hidden bg-[#042039]">
         <div
-          className="bg-[#3974C8] h-full"
+          className="h-full bg-[#3974C8]"
           style={{ width: `${(current / max) * 100}%` }}
         />
       </div>
       <img
-        className={cn('w-2 h-2 object-contain', selected && 'invert')}
+        className={cn(
+          'h-[0.7407vmin] w-[0.7407vmin] object-contain',
+          selected && 'invert'
+        )}
         src="assets/images/arrowright.png"
       />
     </div>

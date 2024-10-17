@@ -34,3 +34,7 @@ export function debugData<P>(events: DebugEvent<P>[], timer = 1000) {
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
+
+export function vmin(i: number): `${string}vmin` {
+  return `${0.09259259259259259 * i}vmin`;
+}

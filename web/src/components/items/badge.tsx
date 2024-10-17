@@ -61,8 +61,8 @@ export default function Badge({
   return (
     <img
       className={cn(
-        'w-5 h-5 object-contain',
-        align === 'left' ? 'mr-1' : 'ml-1',
+        'h-[1.8519vmin] w-[1.8519vmin] object-contain',
+        align === 'left' ? 'mr-[0.3704vmin]' : 'ml-[0.3704vmin]',
         selected && 'invert',
         disabled && name !== 'shop_lock' && 'opacity-50',
         className
