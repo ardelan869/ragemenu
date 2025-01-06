@@ -155,9 +155,7 @@ function Text({
   className,
   ...props
 }: React.HTMLAttributes<HTMLHeadingElement>) {
-  return (
-    <h3 className={cn('max-w-[16.6667vmin] truncate', className)} {...props} />
-  );
+  return <h3 className={cn('max-w-full truncate pr-[0.5556vmin]', className)} {...props} />;
 }
 
 Item.Text = Text;

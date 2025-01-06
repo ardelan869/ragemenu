@@ -3,7 +3,7 @@ game 'gta5'
 lua54 'yes'
 
 author 'ardelan869'
-version 'refactor(nui): chanted px to vmin values'
+version 'fix(nui/item): fixed text width and nuiEvent'
 description 'FiveM native Rage Menu, made with React'
 
 ui_page 'web/dist/index.html'

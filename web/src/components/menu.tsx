@@ -57,15 +57,15 @@ export default function Menu() {
   useNuiEvent<ItemProps[]>('SetItems', setItems);
 
   useNuiEvent<ItemProps>('AddItem', (item) => {
-    setItems([...items, item]);
+    setItems((items) => [...(items ?? []), item]);
   });
 
   useNuiEvent<string>('RemoveItem', (id) => {
-    setItems((items) => items.filter((i) => i.id !== id));
+    setItems((items) => items?.filter((i) => i.id !== id) ?? []);
   });
 
   useNuiEvent<ItemProps>('UpdateItem', (item) => {
-    const index = items.findIndex((i) => i.id === item.id);
+    const index = items?.findIndex((i) => i.id === item.id);
 
     if (index === -1) return;
 
@@ -101,19 +101,19 @@ export default function Menu() {
     [items, selected]
   );
 
-  function ArrowUp() {
+  const arrowUp = useCallback(() => {
     const newIndex = findNextValidIndex('up');
     setSelected(newIndex);
-  }
-  useKeyDown('ArrowUp', ArrowUp);
+  }, [findNextValidIndex]);
+  useKeyDown('ArrowUp', arrowUp);
 
-  function ArrowDown() {
+  const arrowDown = useCallback(() => {
     const newIndex = findNextValidIndex('down');
     setSelected(newIndex);
-  }
-  useKeyDown('ArrowDown', ArrowDown);
+  }, [findNextValidIndex]);
+  useKeyDown('ArrowDown', arrowDown);
 
-  function ArrowRight() {
+  const arrowRight = useCallback(() => {
     const item = items[selected];
 
     if (item.type === 'separator' || item.disabled || item.visible === false)
@@ -135,10 +135,10 @@ export default function Menu() {
     });
 
     setItems([...items]);
-  }
-  useKeyDown('ArrowRight', ArrowRight);
+  }, [menu, items, selected]);
+  useKeyDown('ArrowRight', arrowRight);
 
-  function ArrowLeft() {
+  const arrowLeft = useCallback(() => {
     const item = items[selected];
 
     if (item.type === 'separator' || item.disabled || item.visible === false)
@@ -160,10 +160,10 @@ export default function Menu() {
     });
 
     setItems([...items]);
-  }
-  useKeyDown('ArrowLeft', ArrowLeft);
+  }, [menu, items, selected]);
+  useKeyDown('ArrowLeft', arrowLeft);
 
-  function Enter() {
+  const enter = useCallback(() => {
     const item = items[selected];
 
     if (item.type === 'separator' || item.disabled || item.visible === false)
@@ -185,17 +185,17 @@ export default function Menu() {
       menu,
       selected: item.id
     });
-  }
-  useKeyDown('Enter', Enter);
+  }, [menu, items, selected]);
+  useKeyDown('Enter', enter);
 
-  function Escape() {
+  const escape = useCallback(() => {
     setItems([]);
     setSelected(0);
 
     fetchNui('Exit', { menu });
-  }
-  useKeyDown('Escape', Escape);
-  useKeyDown('Backspace', Escape);
+  }, [menu]);
+  useKeyDown('Escape', escape);
+  useKeyDown('Backspace', escape);
 
   useEffect(() => {
     if (!menu || !items || !items[selected]) return;
@@ -355,9 +355,7 @@ export default function Menu() {
           {items?.map((item, index) => (
             <Item key={item.id} {...item} selected={index === selected}>
               <Item.Text
-                className={
-                  item.type === 'separator' ? 'max-w-[95%]' : 'mr-auto'
-                }
+                className={item.type === 'separator' ? 'pr-0' : 'mr-auto'}
               >
                 {item.label}
               </Item.Text>
