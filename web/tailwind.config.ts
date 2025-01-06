@@ -6,7 +6,7 @@ export default {
     extend: {
       fontFamily: {
         signpainter: ['Signpainter', 'sans-serif'],
-        chalet: ['Chalet Paris', 'sans-serif']
+        chalet: ['Chalet', 'sans-serif']
       },
       backgroundImage: {
         'header-gradient':
