@@ -102,7 +102,7 @@
 ---@field checked boolean
 ---@field iconStyle? 'cross' | 'tick'
 ---@field OnClick nil
----@field OnCheck fun(self: self, func: fun(checked: boolean)): fun()
+---@field OnCheck fun(self: self, func: fun(component: CheckboxComponent, checked: boolean)): fun()
 ---@field SetChecked fun(self: self, checked: boolean)
 ---@field SetIconStyle fun(self: self, iconStyle: 'cross' | 'tick')
 
@@ -110,7 +110,7 @@
 ---@field type 'list'
 ---@field values string[]
 ---@field current number
----@field OnChange fun(self: self, func: fun(current: number, currentValue: string)): fun()
+---@field OnChange fun(self: self, func: fun(component: ListComponent, current: number, currentValue: string)): fun()
 ---@field SetValues fun(self: self, values: string[])
 ---@field SetCurrent fun(self: self, current: number)
 
@@ -120,7 +120,7 @@
 ---@field max number
 ---@field min? number
 ---@field step? number
----@field OnChange fun(self: self, func: fun(current: number)): fun()
+---@field OnChange fun(self: self, func: fun(component: SliderComponent, current: number)): fun()
 ---@field SetCurrent fun(self: self, current: number)
 ---@field SetMax fun(self: self, max: number)
 ---@field SetMin fun(self: self, min: number)
