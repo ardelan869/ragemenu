@@ -96,7 +96,7 @@ export default function Menu() {
         }
       } while (index !== selected);
 
-      return -1;
+      return 0;
     },
     [items, selected]
   );
