@@ -1,5 +1,9 @@
 -- The only purpose of this file is to add types for the sumneko.lua extension
 
+---@diagnostic disable:duplicate-doc-alias
+---@diagnostic disable:duplicate-doc-field
+---@diagnostic disable:duplicate-doc-param
+
 ---@meta
 
 ---@class CallbackRequest
