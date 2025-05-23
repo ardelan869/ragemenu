@@ -191,7 +191,7 @@ function Menu:Create(menuTitle, menuSubtitle, menuPosition, menuWidth, maxVisibl
 
   function menu:addComponent(type, label, rightLabel, description, badges, disabled, values, checked, current, iconStyle,
                              max, min, step)
-    ---@type MenuComponent
+    ---@class MenuComponent
     local component = {
       id = generateUUID(),
       type = type,
