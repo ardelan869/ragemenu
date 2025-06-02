@@ -1,9 +1,15 @@
 import { cn } from '@/lib';
+import StyledText from './styledText';
+
+interface SubTitleProps extends React.HTMLAttributes<HTMLHeadingElement> {
+  children?: string;
+}
 
 export default function SubTitle({
   className,
+  children,
   ...props
-}: React.HTMLAttributes<HTMLHeadingElement>) {
+}: SubTitleProps) {
   return (
     <h3
       className={cn(
@@ -11,6 +17,8 @@ export default function SubTitle({
         className
       )}
       {...props}
-    />
+    >
+      <StyledText text={children || ''} />
+    </h3>
   );
 }

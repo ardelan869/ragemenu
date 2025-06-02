@@ -8,6 +8,8 @@ import { useNuiEvent } from '@/lib/hooks';
 
 import { cn, debugData, fetchNui, vmin } from '@/lib';
 
+import StyledText from './styledText';
+
 type MenuPosition =
   | 'top-left'
   | 'top-center'
@@ -252,9 +254,9 @@ export default function Menu() {
         data: {
           id: 'test',
           resource: 'ragemenu',
-          title: 'Test',
-          subtitle: 'Test',
-          width: 432,
+          title: '~g~Test~s~',
+          subtitle: '~g~Test~s~',
+          width: 431,
           maxVisibleItems: 10,
           banner: 'https://i.imgur.com/Ua8m2Wq.gif'
         }
@@ -264,7 +266,8 @@ export default function Menu() {
         data: [
           {
             id: 'test',
-            label: 'Test',
+            label: '~g~Test~s~',
+            description: '~g~Test~s~',
             type: 'checkbox',
             checked: true,
             badges: {
@@ -344,7 +347,7 @@ export default function Menu() {
           style={menu.banner ? { backgroundImage: `url(${menu.banner})` } : {}}
         >
           <h1 className="translate-y-[0.7407vmin] font-signpainter text-[6.6667vmin] font-extralight text-white">
-            {menu.title}
+            <StyledText text={menu.title || ''} />
           </h1>
         </header>
         {menu.subtitle && <SubTitle>{menu.subtitle}</SubTitle>}
@@ -357,13 +360,13 @@ export default function Menu() {
               <Item.Text
                 className={item.type === 'separator' ? 'pr-0' : 'mr-auto'}
               >
-                {item.label}
+                <StyledText text={item.label || ''} />
               </Item.Text>
             </Item>
           ))}
         </section>
         {items[selected]?.description?.trim?.().length && (
-          <Description>{items[selected].description}</Description>
+          <Description><StyledText text={items[selected].description || ''} /></Description>
         )}
       </main>
     )
