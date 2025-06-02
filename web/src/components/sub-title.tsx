@@ -1,9 +1,14 @@
 import { cn } from '@/lib';
 
+interface SubTitleProps extends React.HTMLAttributes<HTMLHeadingElement> {
+  children?: string;
+}
+
 export default function SubTitle({
   className,
+  children,
   ...props
-}: React.HTMLAttributes<HTMLHeadingElement>) {
+}: SubTitleProps) {
   return (
     <h3
       className={cn(
@@ -11,6 +16,8 @@ export default function SubTitle({
         className
       )}
       {...props}
-    />
+    >
+      children
+    </h3>
   );
 }

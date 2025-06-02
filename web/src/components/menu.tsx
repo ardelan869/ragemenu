@@ -1,12 +1,13 @@
+import { cn, debugData, fetchNui, vmin } from '@/lib';
+
 import Item, { type ItemProps } from '@/components/item';
 import SubTitle from '@/components/sub-title';
 import Description from '@/components/description';
+import ColoredText from '@/components/colored-text';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useKeyDown } from '@/lib/keys';
 import { useNuiEvent } from '@/lib/hooks';
-
-import { cn, debugData, fetchNui, vmin } from '@/lib';
 
 type MenuPosition =
   | 'top-left'
@@ -252,9 +253,9 @@ export default function Menu() {
         data: {
           id: 'test',
           resource: 'ragemenu',
-          title: 'Test',
-          subtitle: 'Test',
-          width: 432,
+          title: '~g~Test~s~',
+          subtitle: '~g~Test~s~',
+          width: 431,
           maxVisibleItems: 10,
           banner: 'https://i.imgur.com/Ua8m2Wq.gif'
         }
@@ -264,7 +265,8 @@ export default function Menu() {
         data: [
           {
             id: 'test',
-            label: 'Test',
+            label: '~g~Test~s~',
+            description: '~g~Test~s~',
             type: 'checkbox',
             checked: true,
             badges: {
@@ -344,7 +346,7 @@ export default function Menu() {
           style={menu.banner ? { backgroundImage: `url(${menu.banner})` } : {}}
         >
           <h1 className="translate-y-[0.7407vmin] font-signpainter text-[6.6667vmin] font-extralight text-white">
-            {menu.title}
+            <ColoredText>{menu.title}</ColoredText>
           </h1>
         </header>
         {menu.subtitle && <SubTitle>{menu.subtitle}</SubTitle>}
@@ -357,13 +359,15 @@ export default function Menu() {
               <Item.Text
                 className={item.type === 'separator' ? 'pr-0' : 'mr-auto'}
               >
-                {item.label}
+                <ColoredText>{item.label}</ColoredText>
               </Item.Text>
             </Item>
           ))}
         </section>
         {items[selected]?.description?.trim?.().length && (
-          <Description>{items[selected].description}</Description>
+          <Description>
+            <ColoredText>{items[selected].description}</ColoredText>
+          </Description>
         )}
       </main>
     )

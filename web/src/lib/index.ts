@@ -2,6 +2,13 @@ import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { isEnvBrowser } from '@/lib/constants';
 
+declare global {
+  interface Window {
+    GetParentResourceName?: () => string;
+    colors: Record<string, string>;
+  }
+}
+
 export async function fetchNui<T = any>(
   event: string,
   data?: any,

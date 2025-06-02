@@ -5,6 +5,12 @@ import { isEnvBrowser } from '@/lib/constants';
 import '@/styles/index.css';
 import Menu from '@/components/menu';
 
-if (isEnvBrowser) document.body.style.backgroundColor = '#1A1A1A';
+if (isEnvBrowser) {
+  document.body.style.backgroundImage =
+    'url("https://i.imgur.com/3pzRj9n.png")';
+  document.body.style.backgroundSize = 'cover';
+  document.body.style.backgroundRepeat = 'no-repeat';
+  document.body.style.backgroundPosition = 'center';
+}
 
-ReactDOM.createRoot(document.body!).render(<Menu />);
+ReactDOM.createRoot(document.body).render(<Menu />);
