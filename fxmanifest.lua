@@ -3,7 +3,7 @@ game 'gta5'
 lua54 'yes'
 
 author 'ardelan869'
-version 'chore: bump up version'
+version 'fix: fix last commit message'
 description 'FiveM native Rage Menu, made with React'
 
 ui_page 'web/dist/index.html'
