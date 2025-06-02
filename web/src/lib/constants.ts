@@ -1,2 +1,3 @@
-export const isEnvBrowser = (): boolean => !(window as any).invokeNative
+export const isEnvBrowser = !('GetParentResourceName' in window);
+
 export const noop = () => {};
