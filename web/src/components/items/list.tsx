@@ -3,6 +3,8 @@ import type { ListProps } from '@/components/item';
 import { cn } from '@/lib';
 import { useItem } from '@/components/item.hooks';
 
+import ColoredText from '@/components/colored-text';
+
 export default function List({
   className,
   ...props
@@ -30,7 +32,9 @@ export default function List({
         )}
         src="assets/images/arrowleft.png"
       />
-      <h3 className="max-w-[13.8889vmin] truncate">{values[current]}</h3>
+      <h3 className="max-w-[13.8889vmin] truncate">
+        <ColoredText>{values[current]}</ColoredText>
+      </h3>
       <img
         className={cn(
           'h-[0.7407vmin] w-[0.7407vmin] object-contain',

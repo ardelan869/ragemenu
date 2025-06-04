@@ -266,7 +266,8 @@ export default function Menu() {
           {
             id: 'test',
             label: '~g~Test~s~',
-            description: '~g~Test~s~',
+            description:
+              '~g~Test~s~\nLongTextLongTextLongTextLongTextLongTextLongTextLongText',
             type: 'checkbox',
             checked: true,
             badges: {
@@ -309,12 +310,12 @@ export default function Menu() {
             type: 'separator'
           },
           {
-            id: 'test5',
+            id: 'test6',
             label: '~r~Test~s~ Test ~g~Test~s~',
             type: 'separator'
           },
           {
-            id: 'test6',
+            id: 'test7',
             label: 'Imaginary Submenu IIII',
             type: 'button',
             badges: {
@@ -322,10 +323,10 @@ export default function Menu() {
             }
           },
           {
-            id: 'test7',
+            id: 'test8',
             label: 'Test7',
             type: 'button',
-            rightLabel: 'Test'
+            rightLabel: 'Test Test Test Test'
           }
         ]
       }
@@ -362,7 +363,9 @@ export default function Menu() {
           {items?.map((item, index) => (
             <Item key={item.id} {...item} selected={index === selected}>
               <Item.Text
-                className={item.type === 'separator' ? 'pr-0' : 'mr-auto'}
+                className={
+                  item.type === 'separator' ? 'pr-0 text-center' : 'mr-auto'
+                }
               >
                 <ColoredText>{item.label}</ColoredText>
               </Item.Text>

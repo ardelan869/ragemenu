@@ -7,6 +7,7 @@ import Checkbox from '@/components/items/checkbox';
 import List from '@/components/items/list';
 import Slider from '@/components/items/slider';
 import Badge from '@/components/items/badge';
+import ColoredText from '@/components/colored-text';
 
 export type ItemType = 'button' | 'checkbox' | 'separator' | 'list' | 'slider';
 
@@ -135,8 +136,8 @@ function Item({
         {children}
         {/* Had to do it here, otherwise i would have gotten an error about an invalid prop */}
         {rightLabel && (
-          <Item.Text className="max-w-[11.1111vmin] justify-self-end">
-            {rightLabel}
+          <Item.Text className="max-w-full justify-self-end">
+            <ColoredText>{rightLabel}</ColoredText>
           </Item.Text>
         )}
         {type === 'list' && <List />}
@@ -155,7 +156,12 @@ function Text({
   className,
   ...props
 }: React.HTMLAttributes<HTMLHeadingElement>) {
-  return <h3 className={cn('max-w-full truncate pr-[0.5556vmin]', className)} {...props} />;
+  return (
+    <h3
+      className={cn('max-w-full w-max truncate pr-[0.5556vmin]', className)}
+      {...props}
+    />
+  );
 }
 
 Item.Text = Text;

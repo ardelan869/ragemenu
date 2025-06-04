@@ -1,5 +1,7 @@
 import { cn } from '@/lib';
 
+import ColoredText from '@/components/colored-text';
+
 interface SubTitleProps extends React.HTMLAttributes<HTMLHeadingElement> {
   children?: string;
 }
@@ -17,7 +19,7 @@ export default function SubTitle({
       )}
       {...props}
     >
-      children
+      <ColoredText>{children}</ColoredText>
     </h3>
   );
 }
