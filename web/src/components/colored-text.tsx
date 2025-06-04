@@ -36,7 +36,12 @@ export default function ColoredText({
       return <br key={index} />;
     } else {
       return (
-        <span key={index} className={currentColor.current}>
+        <span
+          key={index}
+          style={{
+            color: currentColor.current
+          }}
+        >
           {segment}
         </span>
       );

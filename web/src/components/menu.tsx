@@ -309,6 +309,11 @@ export default function Menu() {
             type: 'separator'
           },
           {
+            id: 'test5',
+            label: '~r~Test~s~ Test ~g~Test~s~',
+            type: 'separator'
+          },
+          {
             id: 'test6',
             label: 'Imaginary Submenu IIII',
             type: 'button',
