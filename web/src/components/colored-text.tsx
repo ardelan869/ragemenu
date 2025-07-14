@@ -23,8 +23,6 @@ export default function ColoredText({
 
   if (!children) return null;
 
-  console.log(segments);
-
   return segments.map((segment, index) => {
     if (window.colors[segment as keyof typeof window.colors]) {
       currentColor.current =
