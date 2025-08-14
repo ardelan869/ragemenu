@@ -256,7 +256,7 @@ export default function Menu() {
           title: '~g~Test~s~',
           subtitle: '~g~Test~s~',
           width: 431,
-          maxVisibleItems: 10,
+          maxVisibleItems: 5,
           banner: 'https://i.imgur.com/Ua8m2Wq.gif'
         }
       },
@@ -372,6 +372,20 @@ export default function Menu() {
             </Item>
           ))}
         </section>
+        {menu &&
+          menu.maxVisibleItems &&
+          items.length > menu.maxVisibleItems && (
+            <div className="relative grid h-[3.3333vmin] w-full place-items-center bg-[#0A0A0A]/85">
+              <img
+                src="assets/images/arrowleft.png"
+                className="absolute top-[0.0926vmin] h-[1.6667vmin] w-[1.6667vmin] rotate-90 object-contain"
+              />
+              <img
+                src="assets/images/arrowright.png"
+                className="absolute bottom-[0.0926vmin] h-[1.6667vmin] w-[1.6667vmin] rotate-90 object-contain"
+              />
+            </div>
+          )}
         {items[selected]?.description?.trim?.().length && (
           <Description>
             <ColoredText>{items[selected].description}</ColoredText>

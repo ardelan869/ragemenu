@@ -3,7 +3,7 @@ game 'gta5'
 lua54 'yes'
 
 author 'ardelan869'
-version 'chore(web): remove console log'
+version 'feat(web): add indicator for overflow'
 description 'FiveM native Rage Menu, made with React'
 
 ui_page 'web/dist/index.html'
