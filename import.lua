@@ -98,6 +98,8 @@ function Menu:Open(menu)
     action = 'SetItems',
     data = menu:componentsToJSON()
   });
+
+  menu:trigger('open', menu);
 end
 
 function Menu:Close()
@@ -144,7 +146,8 @@ function Menu:Create(menuTitle, menuSubtitle, menuPosition, menuWidth, maxVisibl
     width = menuWidth,
     maxVisibleItems = maxVisibleItems,
     banner = banner,
-    __components = {}
+    __components = {},
+    __events = {}
   };
 
   function menu:set(key, value)
@@ -164,6 +167,48 @@ function Menu:Create(menuTitle, menuSubtitle, menuPosition, menuWidth, maxVisibl
         data = { [key] = value }
       });
     end
+  end
+
+  function menu:on(event, func)
+    if not self.__events[event] then
+      self.__events[event] = {};
+    end
+
+    self.__events[event][#self.__events[event] + 1] = func;
+
+    return function()
+      for _, eventFunc in next, self.__events[event] do
+        if eventFunc == func then
+          table.remove(self.__events[event], _);
+        end
+      end
+    end
+  end
+
+  function menu:trigger(event, ...)
+    local args = { ... };
+
+    if not self.__events[event] then
+      return;
+    end
+
+    for _, func in next, self.__events[event] do
+      Citizen.CreateThreadNow(function(threadId)
+        func(table.unpack(args));
+
+        if threadId and IsThreadActive(threadId) then
+          TerminateThread(threadId);
+        end
+      end);
+    end
+  end
+
+  function menu:OnOpen(func)
+    return self:on('open', func);
+  end
+
+  function menu:OnClose(func)
+    return self:on('close', func);
   end
 
   function menu:SetTitle(title)
@@ -434,6 +479,8 @@ function Menu:Create(menuTitle, menuSubtitle, menuPosition, menuWidth, maxVisibl
   function menu:Close()
     if Menu.current == self.id then
       Menu:Close();
+
+      menu:trigger('close', menu);
     end
   end
 
