@@ -151,6 +151,11 @@
 
 ---@class Menu:MenuData
 ---@field __components MenuComponent[]
+---@field __events table<string, fun(...: any)[]>
+---@field on fun(self: self, event: string, func: fun(...: any)): fun()
+---@field trigger fun(self: self, event: string, ...: any)
+---@field OnOpen fun(self: self, func: fun(menu: Menu)): fun()
+---@field OnClose fun(self: self, func: fun(menu: Menu)): fun()
 ---@field set fun(self: self, key: string, value: any)
 ---@field SetTitle fun(self: self, title: string)
 ---@field SetSubtitle fun(self: self, subtitle: string)
