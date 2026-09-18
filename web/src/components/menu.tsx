@@ -5,7 +5,13 @@ import SubTitle from '@/components/sub-title';
 import Description from '@/components/description';
 import ColoredText from '@/components/colored-text';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState
+} from 'react';
 import { useKeyDown } from '@/lib/keys';
 import { useNuiEvent } from '@/lib/hooks';
 
@@ -31,12 +37,34 @@ interface MenuProps {
   banner?: string;
 }
 
+const isSelectable = (item?: ItemProps): item is ItemProps =>
+  !!item &&
+  item.type !== 'separator' &&
+  !item.disabled &&
+  item.visible !== false;
+
+/**
+ * Index of the first selectable item, starting at `from` and walking in
+ * `step` direction (wrapping around), or -1 if there is none.
+ */
+const findSelectable = (items: ItemProps[], from: number, step: 1 | -1) => {
+  for (let i = 0; i < items.length; i++) {
+    const index =
+      (((from + i * step) % items.length) + items.length) % items.length;
+
+    if (isSelectable(items[index])) return index;
+  }
+
+  return -1;
+};
+
 export default function Menu() {
+  // id of the menu the current selection was initialised for
   const lastMenu = useRef<string | undefined>(undefined);
   const lastSelected = useRef<Record<string, number>>({});
   const [menu, setMenu] = useState<MenuProps | undefined>();
   const [items, setItems] = useState<ItemProps[]>([]);
-  const [selected, setSelected] = useState(0);
+  const [selected, setSelected] = useState(-1);
 
   useNuiEvent<MenuProps>('UpdateMenu', (menuProps) => {
     setMenu((prevMenu) => {
@@ -50,12 +78,15 @@ export default function Menu() {
   });
 
   useNuiEvent<MenuProps | undefined>('SetMenu', (_menu) => {
-    if (menu) lastMenu.current = menu.id;
-
     setMenu(_menu);
+    // `SetItems` always follows, drop the previous menu's items so the
+    // selection is never initialised against them
+    setItems([]);
   });
 
-  useNuiEvent<ItemProps[]>('SetItems', setItems);
+  useNuiEvent<ItemProps[] | undefined>('SetItems', (_items) => {
+    setItems(_items ?? []);
+  });
 
   useNuiEvent<ItemProps>('AddItem', (item) => {
     setItems((items) => [...(items ?? []), item]);
@@ -78,47 +109,20 @@ export default function Menu() {
     setItems([...items]);
   });
 
-  const findNextValidIndex = useCallback(
-    (direction: 'up' | 'down') => {
-      const step = direction === 'up' ? -1 : 1;
-      let index = selected;
-
-      do {
-        index += step;
-        if (index < 0) index = items.length - 1;
-        if (index >= items.length) index = 0;
-
-        if (
-          items[index].type !== 'separator' &&
-          !items[index].disabled &&
-          items[index].visible !== false
-        ) {
-          return index;
-        }
-      } while (index !== selected);
-
-      return 0;
-    },
-    [items, selected]
-  );
-
   const arrowUp = useCallback(() => {
-    const newIndex = findNextValidIndex('up');
-    setSelected(newIndex);
-  }, [findNextValidIndex]);
+    setSelected(findSelectable(items, selected - 1, -1));
+  }, [items, selected]);
   useKeyDown('ArrowUp', arrowUp);
 
   const arrowDown = useCallback(() => {
-    const newIndex = findNextValidIndex('down');
-    setSelected(newIndex);
-  }, [findNextValidIndex]);
+    setSelected(findSelectable(items, selected + 1, 1));
+  }, [items, selected]);
   useKeyDown('ArrowDown', arrowDown);
 
   const arrowRight = useCallback(() => {
     const item = items[selected];
 
-    if (item.type === 'separator' || item.disabled || item.visible === false)
-      return;
+    if (!isSelectable(item)) return;
 
     if (item.type === 'list') {
       if (item.current === item.values.length - 1) item.current = 0;
@@ -131,7 +135,7 @@ export default function Menu() {
 
     fetchNui('OnChange', {
       menu,
-      selected: items[selected].id,
+      selected: item.id,
       current: item.current
     });
 
@@ -142,8 +146,7 @@ export default function Menu() {
   const arrowLeft = useCallback(() => {
     const item = items[selected];
 
-    if (item.type === 'separator' || item.disabled || item.visible === false)
-      return;
+    if (!isSelectable(item)) return;
 
     if (item.type === 'list') {
       if (item.current === 0) item.current = item.values.length - 1;
@@ -156,7 +159,7 @@ export default function Menu() {
 
     fetchNui('OnChange', {
       menu,
-      selected: items[selected].id,
+      selected: item.id,
       current: item.current
     });
 
@@ -167,8 +170,7 @@ export default function Menu() {
   const enter = useCallback(() => {
     const item = items[selected];
 
-    if (item.type === 'separator' || item.disabled || item.visible === false)
-      return;
+    if (!isSelectable(item)) return;
 
     if (item.type === 'checkbox') {
       item.checked = !item.checked;
@@ -198,8 +200,40 @@ export default function Menu() {
   useKeyDown('Escape', escape);
   useKeyDown('Backspace', escape);
 
+  // Initialise the selection once a menu's items arrive (restoring the last
+  // position when returning to it) and keep it on a selectable item whenever
+  // the items change. Layout effect, so an invalid selection is never painted.
+  useLayoutEffect(() => {
+    if (!menu) {
+      lastMenu.current = undefined;
+      return;
+    }
+
+    if (!items.length) return;
+
+    if (menu.id !== lastMenu.current) {
+      lastMenu.current = menu.id;
+
+      setSelected(findSelectable(items, lastSelected.current[menu.id] ?? 0, 1));
+    } else if (!isSelectable(items[selected])) {
+      setSelected(findSelectable(items, Math.max(selected, 0), 1));
+    }
+  }, [menu, items, selected]);
+
   useEffect(() => {
-    if (!menu || !items || !items[selected]) return;
+    if (!menu || menu.id !== lastMenu.current) return;
+
+    lastSelected.current[menu.id] = selected;
+  }, [selected, menu]);
+
+  useEffect(() => {
+    if (!menu || !isSelectable(items[selected])) {
+      document
+        .querySelector('[data-selected="true"]')
+        ?.removeAttribute('data-selected');
+
+      return;
+    }
 
     const element = document.getElementById(`item-${items[selected].id}`);
 
@@ -220,31 +254,6 @@ export default function Menu() {
       selected: items[selected].id
     });
   }, [selected, menu, items]);
-
-  useEffect(() => {
-    if (!menu || menu.id === lastMenu.current) return;
-
-    lastMenu.current = menu.id;
-
-    setSelected(
-      lastSelected.current[menu.id] ??
-        items?.findIndex(
-          (i) =>
-            i.type !== 'separator' &&
-            i.disabled !== false &&
-            i.visible !== false
-        ) ??
-        0
-    );
-
-    delete lastSelected.current[menu.id];
-  }, [menu, items]);
-
-  useEffect(() => {
-    if (!menu) return;
-
-    lastSelected.current[menu.id] = selected;
-  }, [selected, menu]);
 
   useEffect(() => {
     debugData([

@@ -3,7 +3,7 @@ game 'gta5'
 lua54 'yes'
 
 author 'ardelan869'
-version 'feat(meta): update types'
+version 'fix(nui): fix wrongful selection'
 description 'FiveM native Rage Menu, made with React'
 
 ui_page 'web/dist/index.html'
